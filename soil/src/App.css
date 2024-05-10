@@ -1,0 +1,339 @@
+* {
+  box-sizing: border-box;
+}
+
+/* Style the body */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 10;
+}
+
+/*Styling for carousel*/
+.carousel {
+  width: 100%;
+  margin: 0 auto; 
+  overflow: hidden; 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
+  padding: 0 10px; 
+}
+
+.carousel-item {
+  width: 100%;
+  height: 400px; 
+  object-fit: cover; 
+}
+
+.carousel-caption {
+  bottom: 0; 
+  left: 20px; 
+  right: 20px; 
+}
+
+/*logo of soil in header*/
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 100px; 
+  height: auto; 
+}
+/*cart logo*/
+.cart-container {
+  display: flex;
+  align-items: center;
+}
+
+.cart-logo {
+  width: 30px;
+  height: auto;
+}
+
+.btn-login-signup {
+  background-color: #28a745; 
+  border-color: #28a745; 
+  color: #fff; 
+}
+
+.btn-login-signup:hover {
+  background-color: #218838; 
+  border-color: #1e7e34; 
+  color: #fff; 
+}
+
+/*for navbar some code take from workshop*/
+/* Style the top navigation bar */
+.navbar {
+  overflow: hidden;
+  background-color: #e3e5d8;
+  margin-bottom: 10px;
+  padding-top: 10px;
+}
+
+/* Style the navigation bar links */
+.navbar a {
+  float: left;
+  display: block;
+  color: rgb(132, 181, 112);
+  text-align: center;
+  padding: 14px 20px;
+  text-decoration: none;
+  font-weight: bold;
+}
+.navbar li {
+  list-style-type: none;
+}
+/* Right-aligned link */
+.navbar a.right {
+  float: right;
+}
+
+/* Change color on hover */
+.navbar a:hover {
+  background-color: #499156;
+  color: black;
+}
+
+/* Column container */
+.row {  
+  display: -ms-flexbox; 
+  display: flex;
+  -ms-flex-wrap: wrap; 
+  flex-wrap: wrap;
+}
+
+/* Main column */
+.main {   
+  -ms-flex: 70%; 
+  flex: 70%;
+  background-color: white;
+  padding: 20px;
+}
+/*gardening Information*/
+.backyard-vegetable-gardening {
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 20px;
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+/* Hover effect for vegetable items */
+.backyard-vegetable-gardening:hover {
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+}
+/*title for gardening*/
+.title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.intro {
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.vegetable-list {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+/* Individual vegetable item styling */
+.vegetable-item {
+  width: 31%;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 30px;
+  box-sizing: border-box;
+  transition: all 0.3s ease-in-out;
+}
+
+.vegetable-item:hover {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+}
+
+.vegetable-item h3 {
+  margin-top: 0;
+}
+/* Styling for images within each vegetable item */
+.vegetable-item img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px 5px 0 0;
+  margin-bottom: 15px;
+}
+.loginContainer {
+  min-height: 60vh;
+}
+/*Reference of style for cart taken from https://youtu.be/tEMrD9t85v4?si=7BlPD0wHv__ILy0B*/
+/* Styles for the cart container */
+.cartContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+/* Styles for each individual cart item */
+.cartItem {
+  width: 800px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0px 3px 15px rgba(10, 10, 10, 0.434);
+  border-radius: 25px;
+  margin: 30px;
+  padding: 20px;
+  gap: 20px;
+}
+/* Styles for the image within each cart item */
+.itemImg {
+  width: 200px;
+  border-radius: 10px;
+}
+
+.cartText {
+  width: 100%;
+  font-size: 30px;
+}
+/* style + - button*/
+.count input {
+  width: 35px;
+  text-align: center;
+  font-weight: bold;
+}
+/*styles for checkout button on cart page*/
+.checkout {
+  width: 150px;
+  height: 50px;
+  background-color: rgb(6, 6, 6);
+  color: rgb(238, 235, 235);
+  border: none;
+  border-radius: 8px;
+  margin: 10px;
+  
+}
+/*styling cart page remove link*/
+.remove-link {
+   color: rgb(167, 134, 134);
+    text-decoration: none;
+   margin-left: 20px;
+   
+}
+/*payment container*/
+.containerCheckout {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 7rem;
+  margin-bottom: 10rem;
+}
+/* badge displaying special offer */
+.badge {
+  background-color: #2a7642d6;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 0.75em;
+  margin-left: 10px; 
+  vertical-align: middle;
+}
+
+.formDiv {
+  width: 700px;
+  padding: 30px;
+  border-radius: 10px;
+  background-color: #eaebea;
+  box-shadow: 0px 8px 15px 0px rgba(4, 4, 4, 0.44);
+}
+/*footer styling*/
+.footer {
+  background-color: rgb(13, 16, 12); 
+  padding: 20px; 
+  text-align: center; 
+  display: flex; 
+  flex-wrap: wrap;
+}
+
+/*footer text*/
+.contact-us {
+  order: 1; 
+  flex: 1; 
+  text-align: left;
+  color: rgb(238, 235, 235);
+}
+/*footer text*/
+.stores {
+  order: 3; 
+  flex: auto;
+  text-align: left;
+  color: rgb(238, 235, 235);
+}
+
+/* Float contnt left */
+.leftF {
+  float: left;
+}
+
+/* Removes special underline and highlite from link*/
+.plainLink {
+  text-decoration: none;
+  color: #218838;
+}
+
+/* Changes color of link when hovering over it*/
+.plainLink:hover {
+  color: #0000ff;
+}
+
+/* Custom form sizing */
+.profileFormSizing {
+  min-width: 450px;
+  min-height: 550px;
+}
+.loginFormSizing {
+  min-width: 450px;
+  min-height: 250px;
+}
+.signUpFormSizing {
+  min-width: 450px;
+  min-height: 250px;
+}
+.detailsAndPrefSizing {
+  min-width: 550px;
+  min-height: 350px;
+}
+.mealPlanSizing {
+  min-width: 550px;
+  min-height: 350px;
+}
+
+
+.bottomPadding10 {
+  padding-bottom: 80px;
+}
+
+/* Styling for MealPlan */
+.mealList {
+  list-style-type: none;
+  padding: 0;
+}
+.dayMeals {
+  margin-bottom: 20px;
+}
+
+/*text styling used for specials*/
+.cartItem .text {
+  width: 100%;
+  font-size: 20px;
+}
