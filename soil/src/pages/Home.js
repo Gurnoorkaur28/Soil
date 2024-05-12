@@ -1,12 +1,14 @@
 import Content from "../components/Content";
 import ControlledCarousel from "../components/Carousel";
-import Items from "../components/Items";
+//import Items from "../components/productList";
+import ProductList from "../components/productList";
 const Home = () => {
   return (
     <div>
       <Content />
       <ControlledCarousel />
-      <Items />
+      
+      <ProductList />
     </div>
   );
 };

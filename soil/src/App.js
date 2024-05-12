@@ -26,6 +26,9 @@ import InitializeConstants, {
 import { useState } from "react";
 import DetailsPreferences from "./pages/DetailsPreferences";
 import MealPlan from "./pages/MealPlan";
+//import ProductList from "./data/productList";
+//import productData from "./data/productData";
+import ProductList from "./components/productList";
 
 function App() {
   const [username, setUsername] = useState(getUser());
@@ -79,6 +82,7 @@ function App() {
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/summary" element={<Summary />} />
+            <Route path="/ProductList" element={<ProductList />} />
             <Route
               path="/mealPlan"
               element={<MealPlan username={username} />}

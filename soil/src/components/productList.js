@@ -1,19 +1,33 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { Card, Button, Container, Row, Col, Badge } from "react-bootstrap";
 import { isLoggedIn } from "../data/repository";
-import { ITEMS } from "../utils/constants";
+import { getProducts } from "../data/productsData";
 
-const Items = () => {
+const ProductList  = () => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const products = await getProducts();
+        setProducts(products);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
   const [cartItems, setCartItems] = useState([]);
   //cheching if user is looged in
-  const addToCart = (item) => {
+  const addToCart = (product) => {
     if (!isLoggedIn()) {
       alert("Please log in or sign up to add items to the cart.");
       return;
     }
 
     // Apply discount if item is special
-    const discountItem = applyDiscount(item);
+    const discountItem = applyDiscount(product);
     const existingItem = cartItems.find((i) => i.id === discountItem.id);
     //checking if discount item already exist in cart and incrementing quantity
     if (existingItem) {
@@ -26,26 +40,26 @@ const Items = () => {
     updateLocalStorage(discountItem);
   };
 
-  const applyDiscount = (item) => {
+  const applyDiscount = (product) => {
     // Check if the item is a special item and apply a 50% discount
-    if ([21, 22, 23, 24].includes(item.id)) {
-      return { ...item, price: item.price * 0.5 };
+    if ([21, 22, 23, 24].includes(product.id)) {
+      return { ...product, price: product.price * 0.5 };
     }
-    return item;
+    return product;
   };
 
   //checking if item is already in local storage
-  const updateLocalStorage = (item) => {
+  const updateLocalStorage = (product) => {
     const updatedCartItems =
       JSON.parse(localStorage.getItem("cartItems")) || [];
     const existingItemInStorage = updatedCartItems.find(
-      (i) => i.id === item.id
+      (i) => i.id === product.id
     );
     //if  item already exist in cart , incrementing quantity
     if (existingItemInStorage) {
       existingItemInStorage.quantity += 1;
     } else {
-      updatedCartItems.push(item);
+      updatedCartItems.push(product);
     }
     localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
   };
@@ -57,8 +71,8 @@ const Items = () => {
   return (
     <Container fluid>
       <Row>
-        {ITEMS.map((item) => (
-          <Col key={item.id} xs={12} sm={6} md={4} lg={3} xl={2}>
+      {products.map(product => (
+          <Col key={product.id} xs={12} sm={6} md={4} lg={3} xl={2}>
             <Card
               style={{
                 margin: "10px",
@@ -69,21 +83,21 @@ const Items = () => {
             >
               <Card.Img
                 variant="top"
-                src={`/images/${item.image}`}
+                src={`/images/${product.image}`}
                 style={{ width: "100%", height: "200px", objectFit: "cover" }}
               />
               <Card.Body style={{ flexGrow: 1 }}>
-                <Card.Title>{item.name}</Card.Title>
-                <Card.Title>{item.description}</Card.Title>
+                <Card.Title>{product.name}</Card.Title>
+                <Card.Title>{product.description}</Card.Title>
                 <Card.Text>
-                  Price: ${item.price.toFixed(2)}
-                  {isSpecialItem(item.id) && (
-                    <Badge bg="success" style={{ marginLeft: "10px" }}>
-                      50% OFF
-                    </Badge>
-                  )}
+                  Price: ${product.price.toFixed(2)}
+                  {isSpecialItem(product.id) && (
+                      <Badge bg="success" style={{ marginLeft: "10px" }}>
+                        50% OFF
+                      </Badge>
+                    )}
                 </Card.Text>
-                <Button variant="primary" onClick={() => addToCart(item)}>
+                <Button variant="primary"onClick={() => addToCart(product)} >
                   Add to Cart
                 </Button>
               </Card.Body>
@@ -93,6 +107,6 @@ const Items = () => {
       </Row>
     </Container>
   );
-};
-
-export default Items;
+  };
+  export default ProductList;
+  
