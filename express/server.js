@@ -24,9 +24,10 @@ app.get("/", (req, res) => {
 
 // Adds routes.
 require("./src/routes/products.routes.js")(express, app);
+require("./src/routes/user.routes.js")(express, app);
 
 // Set port, listen for requests.
-const PORT = 4000;
+const PORT = process.env.SOIL_PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });

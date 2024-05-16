@@ -1,7 +1,7 @@
 //code taken from workshop week08 activity1
 const { Sequelize, DataTypes } = require("sequelize");
 const config = require("./config.js");
-const { seedProducts } = require("./seedData");
+const { seedProducts, seedUsers } = require("./seedData");
 
 const db = {
   Op: Sequelize.Op,
@@ -11,15 +11,16 @@ const db = {
   }),
 };
 
-// Include models
+// Models
 db.product = require("./models/products.js")(db.sequelize, DataTypes);
+db.user = require("./models/user.js")(db.sequelize, DataTypes);
 
 // Sync and Seed Function
 db.sync = async () => {
   await db.sequelize.sync({});
 
-  // Call the separate seed function
   await seedProducts(db);
+  await seedUsers(db);
 };
 
 module.exports = db;
