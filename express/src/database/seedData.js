@@ -129,14 +129,14 @@ async function seedUsers(db) {
     await db.user.bulkCreate([
       {
         id: 1,
-        email: "test@user1",
+        email: "testusr1@gmail.com",
         password_hash: passwordHash,
         full_name: "testuser one",
         join_date: joinDate,
       },
       {
         id: 1,
-        email: "test@user2",
+        email: "testusr2@gmail.com",
         password_hash: passwordHash,
         full_name: "testuser two",
         join_date: joinDate,
