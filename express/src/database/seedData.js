@@ -117,6 +117,14 @@ async function seedProducts(db) {
     ]);
   }
 }
+async function seedSpecialProducts(db) {
+  await db.specialProduct.bulkCreate([
+      { id: 16, special_id:1,discounted_price: 1.5, start_date: '2024-05-012', end_date: '2024-06-18' },
+      { id: 15, special_id:2,discounted_price: 3.05, start_date: '2024-05-012', end_date: '2024-06-18' },
+      { id: 14, special_id:3,discounted_price: 4.05, start_date: '2024-05-012', end_date: '2024-06-18' },
+      { id: 13, special_id:4,discounted_price: 3.05, start_date: '2024-05-012', end_date: '2024-06-18' },
+  ]);
+}
 
 const argon2 = require("argon2");
 const joinDate = new Date().toISOString();
@@ -147,5 +155,6 @@ async function seedUsers(db) {
 
 module.exports = {
   seedProducts,
+  seedSpecialProducts,
   seedUsers,
 };

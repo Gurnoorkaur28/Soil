@@ -1,9 +1,8 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Button, Container, Row, Col, Badge } from "react-bootstrap";
-import { isLoggedIn } from "../data/repository";
-import { getProducts } from "../data/productsData";
+import { getProducts } from "../data/productsData";  
 
-const ProductList  = () => {
+const ProductList = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -15,65 +14,15 @@ const ProductList  = () => {
         console.error('Failed to fetch products:', error);
       }
     };
-
     fetchProducts();
   }, []);
-  const [cartItems, setCartItems] = useState([]);
-  //cheching if user is looged in
-  const addToCart = (product) => {
-    if (!isLoggedIn()) {
-      alert("Please log in or sign up to add items to the cart.");
-      return;
-    }
-
-    // Apply discount if item is special
-    const discountItem = applyDiscount(product);
-    const existingItem = cartItems.find((i) => i.id === discountItem.id);
-    //checking if discount item already exist in cart and incrementing quantity
-    if (existingItem) {
-      existingItem.quantity += 1;
-      setCartItems([...cartItems]);
-    } else {
-      discountItem.quantity = 1;
-      setCartItems([...cartItems, discountItem]);
-    }
-    updateLocalStorage(discountItem);
-  };
-
-  const applyDiscount = (product) => {
-    // Check if the item is a special item and apply a 50% discount
-    if ([21, 22, 23, 24].includes(product.id)) {
-      return { ...product, price: product.price * 0.5 };
-    }
-    return product;
-  };
-
-  //checking if item is already in local storage
-  const updateLocalStorage = (product) => {
-    const updatedCartItems =
-      JSON.parse(localStorage.getItem("cartItems")) || [];
-    const existingItemInStorage = updatedCartItems.find(
-      (i) => i.id === product.id
-    );
-    //if  item already exist in cart , incrementing quantity
-    if (existingItemInStorage) {
-      existingItemInStorage.quantity += 1;
-    } else {
-      updatedCartItems.push(product);
-    }
-    localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
-  };
-  // setting items as special
-  const isSpecialItem = (id) => {
-    return [21, 22, 23, 24].includes(id);
-  };
 
   return (
     <Container fluid>
       <Row>
-      {products.map(product => (
+        {products.map(product => (
           <Col key={product.id} xs={12} sm={6} md={4} lg={3} xl={2}>
-            <Card
+             <Card
               style={{
                 margin: "10px",
                 display: "flex",
@@ -86,20 +35,23 @@ const ProductList  = () => {
                 src={`/images/${product.image}`}
                 style={{ width: "100%", height: "200px", objectFit: "cover" }}
               />
-              <Card.Body style={{ flexGrow: 1 }}>
+             <Card.Body style={{ flexGrow: 1 }}>
                 <Card.Title>{product.name}</Card.Title>
-                <Card.Title>{product.description}</Card.Title>
-                <Card.Text>
-                  Price: ${product.price.toFixed(2)}
-                  {isSpecialItem(product.id) && (
-                      <Badge bg="success" style={{ marginLeft: "10px" }}>
-                        50% OFF
-                      </Badge>
-                    )}
-                </Card.Text>
-                <Button variant="primary"onClick={() => addToCart(product)} >
-                  Add to Cart
-                </Button>
+                <Card.Text>{product.description}</Card.Text>
+                {product.specialProducts && product.specialProducts.length > 0 ? (
+                  <>
+                    <Card.Text>
+                      <s>Price: ${product.price.toFixed(2)}</s>
+                    </Card.Text>
+                    <Card.Text>
+                      Special Price: ${product.specialProducts[0].discounted_price.toFixed(2)}
+                      <Badge bg="success" style={{ marginLeft: "10px" }}>Special Offer</Badge>
+                    </Card.Text>
+                  </>
+                ) : (
+                  <Card.Text>Price: ${product.price.toFixed(2)}</Card.Text>
+                )}
+                <Button variant="primary">Add to Cart</Button>
               </Card.Body>
             </Card>
           </Col>
@@ -107,6 +59,6 @@ const ProductList  = () => {
       </Row>
     </Container>
   );
-  };
-  export default ProductList;
-  
+};
+
+export default ProductList;
