@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Constants
-const API_HOST = "http://localhost:4002";  // Adjust the port if your API is running on a different one
+const API_HOST = "http://localhost:4007";  
 
 // Products (Items)
 async function getProducts() {
@@ -28,11 +28,16 @@ async function deleteProduct(id) {
   const response = await axios.delete(`${API_HOST}/api/products/${id}`);
   return response.data;
 }
-
+// Special Products
+async function getSpecialProducts() {
+  const response = await axios.get(`${API_HOST}/api/specialProducts`);
+  return response.data;
+}
 export {
   getProducts,
   getProductById,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getSpecialProducts,
 };
