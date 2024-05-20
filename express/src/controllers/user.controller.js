@@ -15,7 +15,7 @@ exports.all = async (req, res) => {
 // Select one user from the database.
 exports.one = async (req, res) => {
   try {
-    const user = await db.user.findByPk(req.params.id);
+    const user = await db.user.findOne({ where: { email: req.query.email } });
     if (user) {
       res.json(user);
     } else {
@@ -64,5 +64,48 @@ exports.create = async (req, res) => {
         .status(500)
         .json({ error: `Failed to create user: ${error.message}` });
     }
+  }
+};
+
+// Update an existing user in the db.
+exports.update = async (req, res) => {
+  try {
+    const user = await db.user.findOne({ where: { email: req.query.email } });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const updates = req.body;
+
+    // Update the user with the new data
+    await user.update(updates, { fields: Object.keys(updates) });
+    await user.save();
+
+    res.status(200).json(user);
+  } catch (error) {
+    if (error.name === "SequelizeValidationError") {
+      const errors = error.errors.map((err) => err.message);
+      res.status(400).json({ errors });
+    } else {
+      res
+        .status(500)
+        .json({ error: `Failed to update user: ${error.message}` });
+    }
+  }
+};
+
+// Delete a user from the db.
+exports.remove = async (req, res) => {
+  try {
+    const user = await db.user.findOne({ where: { email: req.query.email } });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    await user.destroy();
+    res.status(200).json({ message: "User successfully deleted" });
+  } catch (error) {
+    res.status(500).json({ error: `Failed to delete user: ${error.message}` });
   }
 };

@@ -13,9 +13,14 @@ module.exports = (sequelize, DataTypes) =>
   sequelize.define(
     "user",
     {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
       email: {
         type: DataTypes.STRING(32),
-        primaryKey: true,
+        unique: true,
         validate: {
           is: {
             args: EMAILREGEX,
@@ -75,9 +80,18 @@ module.exports = (sequelize, DataTypes) =>
       },
     },
     {
+      // hooks: {
+      //   beforeSave: async (user) => {
+      //     if (user.password_hash) {
+      //       user.password_hash = await argon2.hash(user.password_hash, {
+      //         type: argon2.argon2id,
+      //       });
+      //     }
+      //   },
+      // },
       hooks: {
         beforeSave: async (user) => {
-          if (user.password_hash) {
+          if (user.changed("password_hash")) {
             user.password_hash = await argon2.hash(user.password_hash, {
               type: argon2.argon2id,
             });
