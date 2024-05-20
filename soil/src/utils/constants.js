@@ -199,7 +199,6 @@ const MEALS = {
   ],
 };
 
-
 // Data for vegetable gardening information
 // Description of each vegetable is taken from chatgpt
 const VEGETABLEGARDENINGINFO = [
@@ -247,4 +246,14 @@ const VEGETABLEGARDENINGINFO = [
   },
 ];
 
-export { MEALS, ACTIVITYFACTORS, GOALFACTORS,  VEGETABLEGARDENINGINFO };
+const API_HOST = "http://localhost:4000";
+const API_USERS = API_HOST + "/api/users/";
+
+export {
+  MEALS,
+  ACTIVITYFACTORS,
+  GOALFACTORS,
+  VEGETABLEGARDENINGINFO,
+  API_HOST,
+  API_USERS,
+};

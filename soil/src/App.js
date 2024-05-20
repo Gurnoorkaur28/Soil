@@ -29,14 +29,26 @@ import MealPlan from "./pages/MealPlan";
 //import ProductList from "./data/productList";
 //import productData from "./data/productData";
 import ProductList from "./components/productList";
+import { useEffect } from "react";
 
 function App() {
   const [username, setUsername] = useState(getUser());
-  const [name, setName] = useState(getUserName(username));
+  const [name, setName] = useState(null);
 
-  const loginUser = (username) => {
+  useEffect(() => {
+    const fetchUserName = async () => {
+      if (username) {
+        const fetchedName = await getUserName(username);
+        setName(fetchedName);
+      }
+    };
+
+    fetchUserName();
+  }, [username]);
+
+  const loginUser = async (username) => {
     setUsername(username);
-    setName(getUserName(username));
+    setName(await getUserName(username));
   };
 
   const logoutUser = () => {

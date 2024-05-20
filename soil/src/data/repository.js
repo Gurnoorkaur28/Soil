@@ -2,67 +2,121 @@
 
 import { useEffect } from "react";
 import { MEALS } from "../utils/constants";
+import axios from "axios";
+import { API_USERS } from "../utils/constants";
 
 const USERS_KEY = "users";
 const USER_KEY = "user";
 
 // Gets users from local storage and returns them
-function getUsers() {
-  // Extract user data from local storage.
-  const data = localStorage.getItem(USERS_KEY);
+// function getUsers() {
+//   // Extract user data from local storage.
+//   const data = localStorage.getItem(USERS_KEY);
 
-  if (data) {
-    // Convert data to objects.
-    return JSON.parse(data);
+//   if (data) {
+//     // Convert data to objects.
+//     return JSON.parse(data);
+//   }
+//   return [];
+// }
+async function getUsers() {
+  try {
+    const response = await axios.get(API_USERS);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+    return [];
   }
-  return [];
 }
 
 // Checks if unique user with the following credentials exists
-function uniqueUserExists(email) {
-  const users = getUsers();
-  for (const user of users) {
-    if (email === user.email) {
-      return false;
-    }
-  }
+// function uniqueUserExists(email) {
+//   const users = getUsers();
+//   for (const user of users) {
+//     if (email === user.email) {
+//       return false;
+//     }
+//   }
 
-  return true;
+//   return true;
+// }
+async function uniqueUserExists(email) {
+  try {
+    const users = await getUsers();
+    return !users.some((user) => user.email === email);
+  } catch (error) {
+    console.error("Error checking if unique user exists:", error);
+    return false;
+  }
 }
 
 // Checks if user with the following credentials exists
-function userExists(email, password) {
-  const users = getUsers();
-  const lowerCaseEmail = email.toLowerCase();
-  for (const user of users) {
-    if (lowerCaseEmail === user.email && password === user.password) {
-      return true;
-    }
-  }
+// function userExists(email, password) {
+//   const users = getUsers();
+//   const lowerCaseEmail = email.toLowerCase();
+//   for (const user of users) {
+//     if (lowerCaseEmail === user.email && password === user.password) {
+//       return true;
+//     }
+//   }
 
-  return false;
+//   return false;
+// }
+async function userExists(email, password) {
+  try {
+    const response = await axios.get(API_USERS + "login", {
+      params: { email, password },
+    });
+    return response.data ? true : false;
+  } catch (error) {
+    console.error("Error checking if user exists:", error);
+    return false;
+  }
 }
 
 // Compare users stored in local storage and sets current user
-function verifyUser(email, password) {
-  if (userExists(email, password)) {
-    setUser(email);
+// function verifyUser(email, password) {
+//   if (userExists(email, password)) {
+//     setUser(email);
+//     return true;
+//   }
+//   return false;
+// }
+async function verifyUser(email, password) {
+  const lowerCaseEmail = email.toLowerCase();
+  if (await userExists(lowerCaseEmail, password)) {
+    setUser(lowerCaseEmail);
     return true;
   }
   return false;
 }
 
 // Adds new user to local storage
-function addUser(name, email, password) {
-  const users = getUsers();
-  const dateOfJoining = new Date().toISOString();
-  const lowerCaseEmail = email.toLowerCase();
-  const newUser = { name, email: lowerCaseEmail, password, dateOfJoining };
-  users.push(newUser);
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  setUser(email);
-}
+// function addUser(name, email, password) {
+//   const users = getUsers();
+//   const dateOfJoining = new Date().toISOString();
+//   const lowerCaseEmail = email.toLowerCase();
+//   const newUser = { name, email: lowerCaseEmail, password, dateOfJoining };
+//   users.push(newUser);
+//   localStorage.setItem(USERS_KEY, JSON.stringify(users));
+//   setUser(email);
+// }
+async function addUser(name, email, password) {
+  try {
+    const lowerCaseEmail = email.toLowerCase();
+    const newUser = {
+      fullName: name,
+      email: lowerCaseEmail,
+      password: password,
+    };
 
+    const response = await axios.post(API_USERS, newUser);
+    setUser(lowerCaseEmail);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to add user:", error);
+  }
+}
 // Stores the specified username as the current user in local storage.
 function setUser(email) {
   const lowerCaseEmail = email.toLowerCase();
@@ -79,30 +133,50 @@ function removeUser() {
   localStorage.removeItem(USER_KEY);
 }
 
-// Returns full name of user
-function getUserName(email) {
-  if (email === null) return null;
-
-  const users = getUsers();
-  const lowerCaseEmail = email.toLowerCase();
-  for (const user of users) {
-    if (lowerCaseEmail === user.email) {
-      return user.name;
-    }
+// Get user by email
+async function getUserByEmail(email) {
+  try {
+    const lowerCaseEmail = email.toLowerCase();
+    const response = await axios.get(API_USERS + "select/" + lowerCaseEmail);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to get user by email:", error);
+    return null;
   }
-  return null;
+}
+
+// Returns full name of user
+// function getUserName(email) {
+//   if (email === null) return null;
+
+//   const users = getUsers();
+//   const lowerCaseEmail = email.toLowerCase();
+//   for (const user of users) {
+//     if (lowerCaseEmail === user.email) {
+//       return user.name;
+//     }
+//   }
+//   return null;
+// }
+async function getUserName(email) {
+  const user = await getUserByEmail(email);
+  return user ? user.full_name : null;
 }
 
 // Returns join date of current user
-function getUserJoinDate(email) {
-  const users = getUsers();
-  const lowerCaseEmail = email.toLowerCase();
-  for (const user of users) {
-    if (lowerCaseEmail === user.email) {
-      return user.dateOfJoining;
-    }
-  }
-  return null;
+// function getUserJoinDate(email) {
+//   const users = getUsers();
+//   const lowerCaseEmail = email.toLowerCase();
+//   for (const user of users) {
+//     if (lowerCaseEmail === user.email) {
+//       return user.dateOfJoining;
+//     }
+//   }
+//   return null;
+// }
+async function getUserJoinDate(email) {
+  const user = await getUserByEmail(email);
+  return user ? user.join_date : null;
 }
 
 /**

@@ -5,7 +5,7 @@ import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import useForm from "../hooks/useForm.js";
 import validate from "../utils/formValidator.js";
-import { verifyUser } from "../data/repository.js";
+import { getUserName, verifyUser } from "../data/repository.js";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -22,20 +22,19 @@ function Login(props) {
 
   const navigate = useNavigate();
 
-  function login() {
+  async function login() {
     // Verify user and sets user if success
-    if (verifyUser(values.email, values.password)) {
-      // Passes current user to pages
-      props.loginUser(values.email);
-
+    if (await verifyUser(values.email, values.password)) {
       // Clear error msg
       setWrongUserExistsError("");
 
       // Passes current user to pages
       props.loginUser(values.email);
 
+      const userName = await getUserName(values.email);
+
       // Show usr confirmation msg
-      setSuccessMessage("Success! Please wait while we redirect");
+      setSuccessMessage(`Welcome, ${userName}!\nPlease wait while we redirect`);
 
       // Delay function take from - https://stackoverflow.com/questions/42089548/how-to-add-delay-in-react-js
       setTimeout(() => {
@@ -56,65 +55,64 @@ function Login(props) {
       className="d-flex justify-content-center align-items-center"
     >
       <div className="loginContainer">
-      {/* Border, 3 width and rounded*/}
-      <Row className="border border-dark-subtle border-3 rounded-5 p-5 loginFormSizing">
-        {/* Login Forum */}
-        <form onSubmit={handleSubmit} noValidate>
-          {/* Email Address*/}
-          <div className="mb-3">
-            <label className="form-label paddingBottom">Email Address:</label>
-            <input
-              className={"input ${errors.email} form-control"}
-              placeholder="Enter email address"
-              type="email"
-              name="email"
-              onChange={handleChange}
-              value={values.email || ""}
-              required
-            ></input>
-            {errors.email && (
-              <p className="alert alert-danger">{errors.email}</p>
+        {/* Border, 3 width and rounded*/}
+        <Row className="border border-dark-subtle border-3 rounded-5 p-5 loginFormSizing">
+          {/* Login Forum */}
+          <form onSubmit={handleSubmit} noValidate>
+            {/* Email Address*/}
+            <div className="mb-3">
+              <label className="form-label paddingBottom">Email Address:</label>
+              <input
+                className={"input ${errors.email} form-control"}
+                placeholder="Enter email address"
+                type="email"
+                name="email"
+                onChange={handleChange}
+                value={values.email || ""}
+                required
+              ></input>
+              {errors.email && (
+                <p className="alert alert-danger">{errors.email}</p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div className="mb-3">
+              <label className="form-label paddingBottom">Password:</label>
+              <input
+                className={"input ${errors.password} form-control"}
+                placeholder="Enter password"
+                type="password"
+                name="password"
+                onChange={handleChange}
+                value={values.password || ""}
+                required
+              ></input>
+              {errors.password && (
+                <p className="alert alert-danger">{errors.password}</p>
+              )}
+            </div>
+
+            {/* Display error msg's */}
+            {userWrongError && (
+              <p className="alert alert-danger">{userWrongError}</p>
             )}
-          </div>
 
-          {/* Password */}
-          <div className="mb-3">
-            <label className="form-label paddingBottom">Password:</label>
-            <input
-              className={"input ${errors.password} form-control"}
-              placeholder="Enter password"
-              type="password"
-              name="password"
-              onChange={handleChange}
-              value={values.password || ""}
-              required
-            ></input>
-            {errors.password && (
-              <p className="alert alert-danger">{errors.password}</p>
+            {/* Display success msg's */}
+            {successMessage && (
+              <p className="alert alert-success">{successMessage}</p>
             )}
-          </div>
 
-          {/* Display error msg's */}
-          {userWrongError && (
-            <p className="alert alert-danger">{userWrongError}</p>
-          )}
-
-          {/* Display success msg's */}
-          {successMessage && (
-            <p className="alert alert-success">{successMessage}</p>
-          )}
-
-          {/* Submit Button */}
-          <div className="d-grid gap-2">
-            <Button variant="outline-primary" type="submit">
-              Login
-            </Button>
-          </div>
-        </form>
-      </Row>
+            {/* Submit Button */}
+            <div className="d-grid gap-2">
+              <Button variant="outline-primary" type="submit">
+                Login
+              </Button>
+            </div>
+          </form>
+        </Row>
       </div>
     </Container>
-    
   );
 }
 

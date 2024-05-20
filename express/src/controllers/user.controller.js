@@ -46,8 +46,9 @@ exports.login = async (req, res) => {
 // Create a new user in the db.
 exports.create = async (req, res) => {
   try {
+    const lowerCaseEmail = req.body.email.toLowerCase();
     const user = await db.user.create({
-      email: req.body.email,
+      email: lowerCaseEmail,
       password_hash: req.body.password,
       full_name: req.body.fullName,
       join_date: new Date().toISOString(),

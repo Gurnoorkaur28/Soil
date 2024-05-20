@@ -22,11 +22,11 @@ function SignUp(props) {
 
   const navigate = useNavigate();
 
-  function signUp() {
+  async function signUp() {
     // Check's for user does not already exists in local storage
-    if (uniqueUserExists(values.email)) {
+    if (await uniqueUserExists(values.email)) {
       // Adds new user to local storage and sets current user
-      addUser(values.name, values.email, values.password);
+      await addUser(values.name, values.email, values.password);
 
       // Clear error msg
       setUserExistsError("");

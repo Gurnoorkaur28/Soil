@@ -1,7 +1,5 @@
 import axios from "axios";
-
-// Constants
-const API_HOST = "http://localhost:4007";  
+import { API_HOST } from "../utils/constants";
 
 // Products (Items)
 async function getProducts() {

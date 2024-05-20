@@ -13,7 +13,7 @@ import {
   updateUserPassword,
 } from "../data/repository.js";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Profile(props) {
@@ -30,6 +30,20 @@ function Profile(props) {
   const [successMessage, setSuccessMessage] = useState("");
 
   const navigate = useNavigate();
+
+  const [userName, setUserName] = useState("");
+  const [joinDate, setJoinDate] = useState("");
+  // Async data fetching
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const name = await getUserName(props.username);
+      const date = await getUserJoinDate(props.username);
+      setUserName(name);
+      setJoinDate(date);
+    };
+
+    fetchUserData();
+  }, [props.username]);
 
   function updateProfile() {
     setErrorMessage("");
@@ -124,7 +138,7 @@ function Profile(props) {
         {/* User details section */}
         <div className="d-flex justify-content-center">
           {/* Displays current user's name */}
-          <div className="me-auto">Name: {getUserName(props.username)}</div>
+          <div className="me-auto">Name: {userName}</div>
 
           {/* Email */}
           <div className="me-auto">Email: {props.username}</div>
@@ -135,7 +149,7 @@ function Profile(props) {
            */}
           <div>
             Join Date:{" "}
-            {format(new Date(getUserJoinDate(props.username)), "dd MMMM yyyy")}
+            {joinDate ? format(new Date(joinDate), "dd MMMM yyyy") : ""}
           </div>
         </div>
 
