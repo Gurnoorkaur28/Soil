@@ -134,10 +134,12 @@ function removeUser() {
 }
 
 // Get user by email
-async function getUserByEmail(email) {
+async function getUserByEmail(usrEmail) {
   try {
-    const lowerCaseEmail = email.toLowerCase();
-    const response = await axios.get(API_USERS + "select/" + lowerCaseEmail);
+    const email = usrEmail.toLowerCase();
+    const response = await axios.get(API_USERS + "select/", {
+      params: { email },
+    });
     return response.data;
   } catch (error) {
     console.error("Failed to get user by email:", error);
@@ -184,61 +186,107 @@ async function getUserJoinDate(email) {
  * Gets the current list of users then
  * Finds the index of user if no user is found it returns -1
  * Then user is Deleted and list is updated in localstorage */
-function deleteSpecificUser(email) {
-  let users = getUsers();
-  const userIndex = users.findIndex((user) => user.email === email);
+// function deleteSpecificUser(email) {
+//   let users = getUsers();
+//   const userIndex = users.findIndex((user) => user.email === email);
 
-  if (userIndex !== -1) {
-    users.splice(userIndex, 1);
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+//   if (userIndex !== -1) {
+//     users.splice(userIndex, 1);
+//     localStorage.setItem(USERS_KEY, JSON.stringify(users));
+//   }
+// }
+async function deleteSpecificUser(email) {
+  try {
+    const response = await axios.delete(API_USERS, {
+      params: { email },
+    });
+    if (response.status === 200) {
+      return true;
+    }
+  } catch (error) {
+    return false;
+  }
+}
+
+// Update function
+async function updateUserDetails(email, updates) {
+  try {
+    const response = await axios.put(
+      `${API_USERS}?email=${encodeURIComponent(email)}`,
+      updates
+    );
+    return response.data;
+  } catch (error) {
+    return false;
   }
 }
 
 // User profile update functions
-function updateUserName(email, newName) {
-  let users = getUsers();
-  const lowerCaseEmail = email.toLowerCase();
-  const userIndex = users.findIndex((user) => user.email === lowerCaseEmail);
+// function updateUserName(email, newName) {
+//   let users = getUsers();
+//   const lowerCaseEmail = email.toLowerCase();
+//   const userIndex = users.findIndex((user) => user.email === lowerCaseEmail);
 
-  if (userIndex !== -1) {
-    users[userIndex].name = newName;
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-    return true;
-  }
-  return false;
+//   if (userIndex !== -1) {
+//     users[userIndex].name = newName;
+//     localStorage.setItem(USERS_KEY, JSON.stringify(users));
+//     return true;
+//   }
+//   return false;
+// }
+async function updateUserName(email, newName) {
+  const updates = { full_name: newName };
+  return await updateUserDetails(email, updates);
 }
 
-function updateUserEmail(oldEmail, newEmail) {
-  let users = getUsers();
-  const lowerCaseOldEmail = oldEmail.toLowerCase();
-  const lowerCaseNewEmail = newEmail.toLowerCase();
-  const userIndex = users.findIndex((user) => user.email === lowerCaseOldEmail);
+// function updateUserEmail(oldEmail, newEmail) {
+//   let users = getUsers();
+//   const lowerCaseOldEmail = oldEmail.toLowerCase();
+//   const lowerCaseNewEmail = newEmail.toLowerCase();
+//   const userIndex = users.findIndex((user) => user.email === lowerCaseOldEmail);
 
-  if (userIndex !== -1 && uniqueUserExists(lowerCaseNewEmail)) {
-    users[userIndex].email = lowerCaseNewEmail;
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-    // Update the current user key if the updated email belongs to the logged-in user
-    if (getUser() === lowerCaseOldEmail) {
-      setUser(lowerCaseNewEmail);
+//   if (userIndex !== -1 && uniqueUserExists(lowerCaseNewEmail)) {
+//     users[userIndex].email = lowerCaseNewEmail;
+//     localStorage.setItem(USERS_KEY, JSON.stringify(users));
+//     // Update the current user key if the updated email belongs to the logged-in user
+//     if (getUser() === lowerCaseOldEmail) {
+//       setUser(lowerCaseNewEmail);
+//     }
+//     return true;
+//   }
+//   return false;
+// }
+async function updateUserEmail(oldEmail, newEmail) {
+  if (await uniqueUserExists(newEmail)) {
+    const updates = { email: newEmail.toLowerCase() };
+    const result = await updateUserDetails(oldEmail, updates);
+    if (result) {
+      if (getUser() === oldEmail.toLowerCase()) {
+        setUser(newEmail.toLowerCase());
+      }
+      return true;
     }
-    return true;
   }
   return false;
 }
 
-function updateUserPassword(email, newPassword) {
-  let users = getUsers();
-  const lowerCaseEmail = email.toLowerCase();
-  const userIndex = users.findIndex(
-    (user) => user.email === lowerCaseEmail.toLowerCase()
-  );
+// function updateUserPassword(email, newPassword) {
+//   let users = getUsers();
+//   const lowerCaseEmail = email.toLowerCase();
+//   const userIndex = users.findIndex(
+//     (user) => user.email === lowerCaseEmail.toLowerCase()
+//   );
 
-  if (userIndex !== -1) {
-    users[userIndex].password = newPassword;
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-    return true;
-  }
-  return false;
+//   if (userIndex !== -1) {
+//     users[userIndex].password = newPassword;
+//     localStorage.setItem(USERS_KEY, JSON.stringify(users));
+//     return true;
+//   }
+//   return false;
+// }
+async function updateUserPassword(email, newPassword) {
+  const updates = { password_hash: newPassword };
+  return await updateUserDetails(email, updates);
 }
 
 // Add or updates user personalized details

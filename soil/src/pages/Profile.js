@@ -45,19 +45,19 @@ function Profile(props) {
     fetchUserData();
   }, [props.username]);
 
-  function updateProfile() {
+  async function updateProfile() {
     setErrorMessage("");
     let successMsg = "";
     let updatedFields = [];
 
     // First check's if a new email is unique else function stops
-    if (values.email && !uniqueUserExists(values.email)) {
+    if (values.email && (await !uniqueUserExists(values.email))) {
       setErrorMessage("Email already exists. Please choose another email.");
       return;
     }
 
     if (values.name) {
-      if (updateUserName(props.username, values.name)) {
+      if (await updateUserName(props.username, values.name)) {
         updatedFields.push("name");
         // Updates current user state
         props.loginUser(props.username);
@@ -66,14 +66,14 @@ function Profile(props) {
       }
     }
     if (values.password) {
-      if (updateUserPassword(props.username, values.password)) {
+      if (await updateUserPassword(props.username, values.password)) {
         updatedFields.push("password");
       } else {
         setErrorMessage("Unknow error occured");
       }
     }
     if (values.email) {
-      if (updateUserEmail(props.username, values.email)) {
+      if (await updateUserEmail(props.username, values.email)) {
         updatedFields.push("email");
         // Updates current user state
         props.loginUser(values.email);
