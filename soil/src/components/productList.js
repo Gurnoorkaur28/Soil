@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Button, Container, Row, Col, Badge } from "react-bootstrap";
-import { getProducts } from "../data/productsData";  
+import { getProducts } from "../data/productsData"; // Update the import path accordingly
+import useCart from "../hooks/useCart"; // Update the import path accordingly
 
-const ProductList = () => {
+const ProductList = ({ email }) => {
   const [products, setProducts] = useState([]);
+  const { handleAddToCart } = useCart(email);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -22,7 +24,7 @@ const ProductList = () => {
       <Row>
         {products.map(product => (
           <Col key={product.id} xs={12} sm={6} md={4} lg={3} xl={2}>
-             <Card
+            <Card
               style={{
                 margin: "10px",
                 display: "flex",
@@ -35,7 +37,7 @@ const ProductList = () => {
                 src={`/images/${product.image}`}
                 style={{ width: "100%", height: "200px", objectFit: "cover" }}
               />
-             <Card.Body style={{ flexGrow: 1 }}>
+              <Card.Body style={{ flexGrow: 1 }}>
                 <Card.Title>{product.name}</Card.Title>
                 <Card.Text>{product.description}</Card.Text>
                 {product.specialProducts && product.specialProducts.length > 0 ? (
@@ -51,7 +53,7 @@ const ProductList = () => {
                 ) : (
                   <Card.Text>Price: ${product.price.toFixed(2)}</Card.Text>
                 )}
-                <Button variant="primary">Add to Cart</Button>
+                <Button variant="primary" onClick={() => handleAddToCart(product.id)}>Add to Cart</Button>
               </Card.Body>
             </Card>
           </Col>

@@ -1,15 +1,16 @@
-//count handler for add to cart
+import React from 'react';
+
 const QuantityHandler = ({ item, handleQuantityChange }) => {
   const handleIncrease = () => {
-    handleQuantityChange(item.id, item.quantity + 1);
+    handleQuantityChange(item.cart_id, item.productId, item.quantity + 1);
   };
 
   const handleDecrease = () => {
     if (item.quantity > 1) {
-      handleQuantityChange(item.id, item.quantity - 1);
+      handleQuantityChange(item.cart_id, item.productId, item.quantity - 1);
     }
   };
-  //buttons for quantity
+
   return (
     <div className="count">
       <button onClick={handleDecrease}>-</button>
@@ -18,4 +19,5 @@ const QuantityHandler = ({ item, handleQuantityChange }) => {
     </div>
   );
 };
+
 export default QuantityHandler;
