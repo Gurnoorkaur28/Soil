@@ -151,10 +151,30 @@ async function seedProducts(db) {
 // }
 async function seedSpecialProducts(db) {
   await db.specialProduct.bulkCreate([
-    { id: 16,discounted_price: 1.5, start_date: '2024-05-12', end_date: '2024-06-18' },
-    { id: 15,discounted_price: 3.05, start_date: '2024-05-12', end_date: '2024-06-18' },
-    { id: 14,discounted_price: 4.05, start_date: '2024-05-12', end_date: '2024-06-18' },
-    { id: 13,discounted_price: 3.05, start_date: '2024-05-12', end_date: '2024-06-18' }
+    {
+      id: 16,
+      discounted_price: 1.5,
+      start_date: "2024-05-12",
+      end_date: "2024-06-18",
+    },
+    {
+      id: 15,
+      discounted_price: 3.05,
+      start_date: "2024-05-12",
+      end_date: "2024-06-18",
+    },
+    {
+      id: 14,
+      discounted_price: 4.05,
+      start_date: "2024-05-12",
+      end_date: "2024-06-18",
+    },
+    {
+      id: 13,
+      discounted_price: 3.05,
+      start_date: "2024-05-12",
+      end_date: "2024-06-18",
+    },
   ]);
 }
 const argon2 = require("argon2");
@@ -182,25 +202,24 @@ async function seedUsers(db) {
   }
 }
 async function seedcart(db) {
-await db.cart.bulkCreate([
-  {   
-      email:"gurnoor@ymail.com",
-  },
-  
-]);
+  await db.cart.bulkCreate([
+    {
+      email: "testusr1@gmail.com",
+    },
+  ]);
 }
 async function seedCartItems(db) {
   await db.cartItem.bulkCreate([
-      {   
-         cart_id:1,
-          productId: 1, // Assuming the first product has ID 1
-          quantity: 2
-      },
-      {
-        cart_id:1,
-        productId: 2, // Assuming the second product has ID 2
-        quantity: 3
-      }
+    {
+      cart_id: 1,
+      productId: 1,
+      quantity: 2,
+    },
+    {
+      cart_id: 1,
+      productId: 2,
+      quantity: 3,
+    },
   ]);
 }
 module.exports = {
