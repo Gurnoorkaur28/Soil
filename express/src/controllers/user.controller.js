@@ -26,6 +26,20 @@ exports.one = async (req, res) => {
   }
 };
 
+// Gets user ID from database using email.
+exports.id = async (req, res) => {
+  try {
+    const user = await db.user.findOne({ where: { email: req.query.email } });
+    if (user) {
+      res.json({ userId: user.id });
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch user ID" });
+  }
+};
+
 // Select user from database where username & password match.
 exports.login = async (req, res) => {
   try {
