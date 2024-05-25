@@ -29,6 +29,20 @@ async function getUsers() {
   }
 }
 
+// Get user id
+async function getUserId(usrEmail) {
+  try {
+    const email = usrEmail.toLowerCase();
+    const response = await axios.get(API_USERS + "id/", {
+      params: { email },
+    });
+    return response.data.userId;
+  } catch (error) {
+    console.error("Failed to fetch user id:", error);
+    return null;
+  }
+}
+
 // Checks if unique user with the following credentials exists
 // function uniqueUserExists(email) {
 //   const users = getUsers();
@@ -372,6 +386,7 @@ export {
   addOrUpdatePersonalisedProfiles,
   getUserProfile,
   getMealAccordPreference,
+  getUserId,
 };
 
 export default InitializeConstants;
