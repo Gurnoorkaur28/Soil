@@ -212,7 +212,7 @@ async function seedcart(db) {
         user_id: 1,
       },
       {
-        user_id: 2,
+        user_id: 3,
       },
     ]);
   }
@@ -234,10 +234,30 @@ async function seedCartItems(db) {
     ]);
   }
 }
+async function seedreview(db) {
+  const reviewCount = await db.review.count();
+  if (reviewCount === 0) {
+    await db.review.bulkCreate([
+      {
+        rating: 3,
+        productId: 1,
+        comment:"good quality",
+        user_id: 1,
+      },
+      {
+        rating: 3,
+        productId: 2,
+        comment:"good quality",
+        user_id: 1,
+      },
+    ]);
+  }
+}
 module.exports = {
   seedProducts,
   seedSpecialProducts,
   seedUsers,
   seedCartItems,
   seedcart,
+  seedreview,
 };

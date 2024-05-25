@@ -1,37 +1,5 @@
 const db = require("../database");
-// const Cart = db.cart;
-// const CartItem = db.cartItem;
-// const Product = db.product;
-// const User = db.user;
 
-// Get the user's cart
-// exports.getUserCart = async (req, res) => {
-//   try {
-//     const { email } = req.user;
-//     const cart = await Cart.findOne({
-//       where: { email },
-//       include: [
-//         {
-//           model: CartItem,
-//           include: [
-//             {
-//               model: Product,
-//               attributes: ['name', 'description', 'price', 'image']
-//             }
-//           ]
-//         }
-//       ]
-//     });
-
-//     if (!cart) {
-//       return res.status(404).send("No cart found for this user.");
-//     }
-
-//     res.json(cart);
-//   } catch (error) {
-//     res.status(500).send("Failed to fetch cart: " + error.message);
-//   }
-// };
 
 exports.all = async (req, res) => {
   try {
@@ -47,104 +15,185 @@ exports.all = async (req, res) => {
     });
 
     if (!userCart) {
-      return res.status(404).json({ message: "No cart found for this user." });
+      // If the user doesn't have a cart, create a new one
+      const newCart = await db.cart.create({ user_id: userId });
+      res.json(newCart);
+    } else {
+      res.json(userCart);
     }
-
-    res.json(userCart);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch cart: " + error.message });
   }
 };
+            
 
-// Add an item to the cart
-// exports.addToCart = async (req, res) => {
-//   try {
-//     const { email } = req.user; // Assuming req.user is set by authentication middleware
-//     const { productId, quantity } = req.body;
+exports.addItem = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const productId = Number(req.query.productId);
+    const quantity = Number(req.query.quantity) || 1;
 
-//     let cart = await Cart.findOne({ where: { email } });
-//     if (!cart) {
-//       cart = await Cart.create({ email });
-//     }
+    // Check if productId is a number
+    if (isNaN(productId)) {
+      return res.status(400).json({ message: "Invalid productId value." });
+    }
 
-//     let cartItem = await CartItem.findOne({
-//       where: { cart_id: cart.cart_id, productId }
-//     });
+    // Get the user's cart
+    const userCart = await db.cart.findOne({ where: { user_id: userId } });
 
-//     if (cartItem) {
-//       cartItem.quantity += quantity;
-//       await cartItem.save();
-//     } else {
-//       cartItem = await CartItem.create({
-//         cart_id: cart.cart_id,
-//         productId,
-//         quantity
-//       });
-//     }
+    if (!userCart) {
+      return res.status(404).json({ message: "No cart found for this user." });
+    }
 
-//     res.status(201).json(cartItem);
-//   } catch (error) {
-//     res.status(500).send("Failed to add item to cart: " + error.message);
-//   }
-// };
+    // Get the product object with the given productId
+    const product = await db.product.findOne({ where: { id: productId } });
 
-// Update the quantity of an item in the cart
-// exports.updateCartItem = async (req, res) => {
-//   try {
-//     const { cartItemId, quantity } = req.body;
+    if (!product) {
+      return res.status(404).json({ message: "No product found with this id." });
+    }
 
-//     const cartItem = await CartItem.findByPk(cartItemId);
-//     if (!cartItem) {
-//       return res.status(404).send({ message: "CartItem not found" });
-//     }
+    // Add the item to the cart
+    const newCartItem = await db.cartItem.create({
+      cart_id: userCart.cart_id,
+      productId: product.id,
+      quantity,
+    });
 
-//     cartItem.quantity = quantity;
-//     await cartItem.save();
+    res.json(newCartItem);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to add item to cart: " + error.message });
+  }
+};
+exports.updateCartItemQuantity = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const productId = parseInt(req.params.productId, 10);
+    const newQuantity = parseInt(req.query.newQuantity, 10);
+    // Check if productId and newQuantity are numbers
+     if (isNaN(productId)) {
+     return res.status(400).json({
+      error: {
+      code: 400,
+      message: "Invalid productId value.",
+      details: "Please provide a valid productId value.",
+      
+    },
+  });
+}
+    if (isNaN(newQuantity) || newQuantity <= 0) {
+     return res.status(400).json({
+    error: {
+      code: 400,
+      message: "Invalid newQuantity value.",
+      details: "Please provide a positive newQuantity value.",
+    },
+  });
+}
 
-//     res.status(200).send(cartItem);
-//   } catch (error) {
-//     res.status(500).send({ message: error.message });
-//   }
-// };
+    // Get the user's cart
+    const userCart = await db.cart.findOne({ where: { user_id: userId } });
 
-// Remove an item from the cart
-// exports.removeCartItem = async (req, res) => {
-//   try {
-//     const { cartItemId } = req.body;
+    if (!userCart) {
+      return res.status(404).json({
+        error: {
+          code: 404,
+          message: "You don't have a cart. Please create one to add items.",
+        },
+      });
+    }
 
-//     const cartItem = await CartItem.findByPk(cartItemId);
-//     if (!cartItem) {
-//       return res.status(404).send({ message: "CartItem not found" });
-//     }
+    // Find the cart item with the given cart_id and product_id
+    // Find the cart item with the given cart_id and productId
+const cartItem = await db.cartItem.findOne({
+  where: { cart_id: userCart.cart_id, productId: productId },
+});
+    if (!cartItem) {
+      return res.status(404).json({
+        error: {
+          code: 404,
+          message: "No cart item found with this product id.",
+        },
+      });
+    }
 
-//     await cartItem.destroy();
-//     res.status(200).send({ message: "CartItem removed" });
-//   } catch (error) {
-//     res.status(500).send({ message: error.message });
-//   }
-// };
+    // Update the quantity of the cart item
+    try {
+      cartItem.quantity = newQuantity;
+      await cartItem.save();
+      res.json(cartItem);
+    } catch (error) {
+      res.status(500).json({
+        error: {
+          code: 500,
+          message: "Failed to update cart item quantity.",
+          details: error.message,
+        },
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      error: {
+        code: 500,
+        message: "An unexpected error occurred.",
+        details: error.message,
+      },
+    });
+  }
+};
 
-// Complete purchase
-// exports.completePurchase = async (req, res) => {
-//   try {
-//     const { email } = req.user; // Assuming req.user is set by authentication middleware
-//     const cart = await Cart.findOne({ where: { email } });
+exports.deleteCartItem = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const productId = parseInt(req.params.productId, 10);
 
-//     if (!cart) {
-//       return res.status(404).send('Cart not found');
-//     }
+    // Check if productId is a number
+    if (isNaN(productId)) {
+      return res.status(400).json({
+        error: {
+          code: 400,
+          message: "Invalid productId value.",
+          details: "Please provide a valid productId value.",
+        },
+      });
+    }
 
-//     const cartItems = await CartItem.findAll({ where: { cart_id: cart.cart_id } });
-//     if (cartItems.length === 0) {
-//       return res.status(400).send('Cart is empty');
-//     }
+    // Get the user's cart
+    const userCart = await db.cart.findOne({ where: { user_id: userId } });
 
-//     // Implement purchase logic here (e.g., charge the user, update inventory)
+    if (!userCart) {
+      return res.status(404).json({
+        error: {
+          code: 404,
+          message: "You don't have a cart. Please create one to add items.",
+        },
+      });
+    }
 
-//     // Clear the cart
-//     await CartItem.destroy({ where: { cart_id: cart.cart_id } });
-//     res.send('Purchase completed');
-//   } catch (error) {
-//     res.status(500).send('Failed to complete purchase: ' + error.message);
-//   }
-// };
+    // Find the cart item with the given cart_id and product_id
+    const cartItem = await db.cartItem.findOne({
+      where: { cart_id: userCart.cart_id, productId: productId },
+    });
+
+    if (!cartItem) {
+      return res.status(404).json({
+        error: {
+          code: 404,
+          message: "No cart item found with this product id.",
+        },
+      });
+    }
+
+    // Delete the cart item
+    await cartItem.destroy();
+
+    res.json({ message: "Cart item deleted successfully." });
+  } catch (error) {
+    res.status(500).json({
+      error: {
+        code: 500,
+        message: "Failed to delete cart item.",
+        details: error.message,
+      },
+    });
+  }
+};

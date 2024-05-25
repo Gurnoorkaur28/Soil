@@ -1,19 +1,16 @@
 module.exports = (express, app) => {
   const router = express.Router();
   const controller = require("../controllers/cart.controller.js");
-  // const  authenticateUser = require("../controllers/authenticate.controller.js");
+  
   app.use(express.json());
 
-  // router.get('/', authenticateUser, cartController.getUserCart);
-  // router.post('/cart/item', authenticateUser, cartController.addToCart);
-  // router.put('/cart/item', authenticateUser, cartController.updateCartItem);
-  // router.delete('/cart/item', authenticateUser, cartController.removeCartItem);
-  // router.post('/cart/complete', authenticateUser, cartController.completePurchase);
+//get all caartItems for specific id
   router.get("/:id", controller.all);
-  //   router.post("/cart/item", cartController.addToCart);
-  //   router.put("/cart/item", cartController.updateCartItem);
-  //   router.delete("/cart/item", cartController.removeCartItem);
-  //   router.post("/cart/complete", cartController.completePurchase);
-
+  //add tems to cart
+  router.post("/:id/item",controller.addItem);
+  //update items in cart
+  router.put("/:id/item/:productId", controller.updateCartItemQuantity);
+  //delete items from cart
+  router.delete("/:id/item/:productId", controller.deleteCartItem);
   app.use("/api/cartItem", router);
 };

@@ -49,3 +49,34 @@ exports.create = async (req, res) => {
     }
 };
 
+// Find product by primary key
+exports.id = async (req, res) => {
+    try {
+        const product = await db.product.findByPk(req.params.id, {
+            include: [{
+                model: db.specialProduct,
+                required: false,  // LEFT OUTER JOIN to include products even without special offers
+                where: {
+                    start_date: {
+                        [db.Op.lte]: new Date() // Ensure the special is currently valid
+                    },
+                    end_date: {
+                        [db.Op.gte]: new Date()
+                    }
+                }
+            }]
+        });
+  
+        if (product) {
+            const productJSON = product.toJSON();
+            if (productJSON.specialProduct) {
+                productJSON.discountedPrice = productJSON.specialProduct.discounted_price;
+            }
+            res.json(productJSON);
+        } else {
+            res.status(404).send("Product not found");
+        }
+    } catch (error) {
+        res.status(500).send("Failed to fetch product: " + error.message);
+    }
+  };

@@ -1,17 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { Card, Button, Container, Row, Col, Badge } from "react-bootstrap";
-import { getProducts } from "../data/productsData"; // Update the import path accordingly
+import { getProducts, getProductById, getReviewsByProductId } from "../data/productsData"; // Update the import path accordingly
 import useCart from "../hooks/useCart"; // Update the import path accordingly
 
-const ProductList = ({ email }) => {
+const ProductList = () => {
   const [products, setProducts] = useState([]);
-  const { handleAddToCart } = useCart(email);
+  const [reviews, setReviews] = useState({}); // Store reviews for each product
+  
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const products = await getProducts();
         setProducts(products);
+        // Fetch reviews for each product
+        const reviewsPromises = products.map(product => getReviewsByProductId(product.id));
+        const reviewsData = await Promise.all(reviewsPromises);
+        const reviewsObj = {};
+        reviewsData.forEach((reviews, index) => {
+          reviewsObj[products[index].id] = reviews;
+        });
+        setReviews(reviewsObj);
       } catch (error) {
         console.error('Failed to fetch products:', error);
       }
@@ -43,8 +52,7 @@ const ProductList = ({ email }) => {
                 {product.specialProducts && product.specialProducts.length > 0 ? (
                   <>
                     <Card.Text>
-                      <s>Price: ${product.price.toFixed(2)}</s>
-                    </Card.Text>
+                       Price: ${product.price.toFixed(2)}</Card.Text>
                     <Card.Text>
                       Special Price: ${product.specialProducts[0].discounted_price.toFixed(2)}
                       <Badge bg="success" style={{ marginLeft: "10px" }}>Special Offer</Badge>
@@ -53,7 +61,18 @@ const ProductList = ({ email }) => {
                 ) : (
                   <Card.Text>Price: ${product.price.toFixed(2)}</Card.Text>
                 )}
-                <Button variant="primary" onClick={() => handleAddToCart(product.id)}>Add to Cart</Button>
+                <Button variant="primary">Add to Cart</Button>
+                {reviews[product.id] && (
+                  <>
+                    <h5>Reviews:</h5>
+                    {reviews[product.id].map(review => (
+                      <div key={review.id}>
+                        <p>{review.rating} stars</p>
+                        <p>{review.comment}</p>
+                      </div>
+                    ))}
+                  </>
+                )}
               </Card.Body>
             </Card>
           </Col>

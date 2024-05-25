@@ -7,6 +7,7 @@ const {
   seedUsers,
   seedCartItems,
   seedcart,
+  seedreview,
 } = require("./seedData");
 const db = {
   Op: Sequelize.Op,
@@ -25,6 +26,7 @@ db.specialProduct = require("./models/specialProducts.js")(
 );
 db.cartItem = require("./models/cartItem.js")(db.sequelize, DataTypes);
 db.cart = require("./models/cart.js")(db.sequelize, DataTypes);
+db.review = require("./models/reviews.js")(db.sequelize, DataTypes);
 // Relate cart and products
 //db.cartItem.belongsTo(db.product, { foreignKey: 'productId' });
 //db.product.hasMany(db.cartItem, { foreignKey: 'productId' });
@@ -44,7 +46,12 @@ db.cartItem.belongsTo(db.cart, { foreignKey: "cart_id" });
 
 db.product.hasMany(db.cartItem, { foreignKey: "productId" });
 db.cartItem.belongsTo(db.product, { foreignKey: "productId" });
+//reviews
+db.product.hasMany(db.review, { foreignKey: 'productId' });
+db.review.belongsTo(db.product, { foreignKey: 'productId' });
 
+db.user.hasMany(db.review, { foreignKey: 'user_id' });
+db.review.belongsTo(db.user, { foreignKey: 'user_id' });
 // Relate specialProducts and products
 db.product.hasMany(db.specialProduct, { foreignKey: "id" });
 db.specialProduct.belongsTo(db.product, { foreignKey: "id" });
@@ -58,6 +65,7 @@ db.sync = async () => {
   await seedUsers(db);
   await seedcart(db);
   await seedCartItems(db);
+  await seedreview(db);
 };
 
 module.exports = db;

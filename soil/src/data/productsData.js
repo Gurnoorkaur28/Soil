@@ -27,32 +27,42 @@ async function deleteProduct(id) {
   return response.data;
 }
 
+// Cart
+async function getUserCart(userId) {
+  const response = await axios.get(`${API_HOST}/api/cartItem/${userId}`);
+  return response.data;
+}
+
+async function addItemToCart(userId, productId, quantity = 1) {
+  const response = await axios.post(`${API_HOST}/api/cartItem/${userId}/item`, {
+    productId,
+    quantity,
+  });
+  return response.data;
+}
+
+async function updateCartItemQuantity(userId, productId, newQuantity) {
+  const response = await axios.put(`${API_HOST}/api/cartItem/${userId}/item/${productId}`, {
+    newQuantity,
+  });
+  return response.data;
+}
+
+async function removeCartItem(userId, productId) {
+  const response = await axios.delete(`${API_HOST}/api/cartItem/${userId}/item/${productId}`);
+  return response.data;
+}
+
+
 // Special Products
 async function getSpecialProducts() {
   const response = await axios.get(`${API_HOST}/api/specialProducts`);
   return response.data;
 }
-// Cart
-async function addToCart(cartItem) {
-  const response = await axios.post(`${API_HOST}/api/cartItem`,cartItem);
+async function getReviewsByProductId(productId) {
+  const response = await axios.get(`${API_HOST}/api/review/${productId}`);
   return response.data;
-}
-
-async function getUserCart(email) {
-  const response = await axios.get(`${API_HOST}/api/cart/user-cart/${email}`);
-  return response.data;
-}
-
-async function updateCartItem(cartItem) {
-  const response = await axios.put(`${API_HOST}/api/cart/update-cart-item`, cartItem);
-  return response.data;
-}
-
-async function removeCartItem(cartItemId) {
-  const response = await axios.delete(`${API_HOST}/api/cart/remove-cart-item`, { data: { cartItemId } });
-  return response.data;
-}
-
+};
 
 export {
   getProducts,
@@ -61,10 +71,11 @@ export {
   updateProduct,
   deleteProduct,
   getSpecialProducts,
-  addToCart,
   getUserCart,
-  updateCartItem,
+  addItemToCart,
+  updateCartItemQuantity,
   removeCartItem,
+  getReviewsByProductId,
   
 };
 
