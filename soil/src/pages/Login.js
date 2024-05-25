@@ -5,7 +5,7 @@ import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import useForm from "../hooks/useForm.js";
 import validate from "../utils/formValidator.js";
-import { getUserName, verifyUser } from "../data/repository.js";
+import { getUserId, getUserName, verifyUser } from "../data/repository.js";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 

@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { getUserCart, addItemToCart, updateCartItemQuantity, removeCartItem } from '../data/productsData';
-import { getUserId } from '../data/repository';
+import {
+  getUserCart,
+  addItemToCart,
+  updateCartItemQuantity,
+  removeCartItem,
+} from "../data/productsData";
+import { getUser, getUserId } from "../data/repository";
 
-const useCart = (props) => {
+const useCart = () => {
   const [id, setId] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const user = getUser();
     const fetchUserId = async () => {
-      const id = await getUserId(props.userName);
+      const id = await getUserId(user);
       setId(id);
     };
     fetchUserId();
-  }, [props.userName]);
+  }, [getUser]);
 
   useEffect(() => {
     const fetchCartItems = async () => {
