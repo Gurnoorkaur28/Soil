@@ -40,10 +40,9 @@ async function addItemToCart(userId, productId, quantity = 1) {
   });
   return response.data;
 }
-
-async function updateCartItemQuantity(userId, productId, newQuantity) {
+async function updateCartItemQuantity(userId, productId, quantity) {
   const response = await axios.put(`${API_HOST}/api/cartItem/${userId}/item/${productId}`, {
-    newQuantity,
+    quantity,
   });
   return response.data;
 }

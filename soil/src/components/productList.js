@@ -6,7 +6,7 @@ import useCart from "../hooks/useCart"; // Update the import path accordingly
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [reviews, setReviews] = useState({}); // Store reviews for each product
-  
+  const { cartItems, loading, error, addItem, updateItemQuantity, removeItem } = useCart(); // Destructure necessary functions from useCart
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -27,6 +27,10 @@ const ProductList = () => {
     };
     fetchProducts();
   }, []);
+
+  const handleAddToCart = (productId) => {
+    addItem(productId, 1); // Add item to cart with a default quantity of 1
+  };
 
   return (
     <Container fluid>
@@ -51,8 +55,7 @@ const ProductList = () => {
                 <Card.Text>{product.description}</Card.Text>
                 {product.specialProducts && product.specialProducts.length > 0 ? (
                   <>
-                    <Card.Text>
-                       Price: ${product.price.toFixed(2)}</Card.Text>
+                    <Card.Text>Price: ${product.price.toFixed(2)}</Card.Text>
                     <Card.Text>
                       Special Price: ${product.specialProducts[0].discounted_price.toFixed(2)}
                       <Badge bg="success" style={{ marginLeft: "10px" }}>Special Offer</Badge>
@@ -61,7 +64,7 @@ const ProductList = () => {
                 ) : (
                   <Card.Text>Price: ${product.price.toFixed(2)}</Card.Text>
                 )}
-                <Button variant="primary">Add to Cart</Button>
+                <Button variant="primary" onClick={() => handleAddToCart(product.id)}>Add to Cart</Button>
                 {reviews[product.id] && (
                   <>
                     <h5>Reviews:</h5>

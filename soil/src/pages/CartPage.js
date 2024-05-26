@@ -5,7 +5,7 @@ import useCart from '../hooks/useCart';
 
 const CartPage = () => {
   const navigate = useNavigate();
-  const { cartItems, totalPrice, handleQuantityChange, removeFromCart } = useCart();
+  const { cartItems, totalPrice, handleQuantityChange, removeItem } = useCart();
 
   const handleCheckout = () => {
     if (cartItems.length === 0) {
@@ -23,7 +23,7 @@ const CartPage = () => {
       ) : (
         <ul>
           {cartItems.map((item) => (
-            <li key={item.cart_id} className="cartItem">
+            <li key={item.id} className="cartItem">
               <img
                 src={`/images/${item.product.image}`}
                 alt={item.product.name}
@@ -31,13 +31,22 @@ const CartPage = () => {
               />
               <div className="cartText">
                 <p>{item.product.name}</p>
-                <span>Price: ${item.product.price.toFixed(2)}</span> -
+                {item.product.specialProducts && item.product.specialProducts.length > 0 ? (
+                  <span>
+                    Price: <del>${item.product.price.toFixed(2)}</del> {' '}
+                    <span style={{color: 'red'}}>${item.product.specialProducts[0].discounted_price.toFixed(2)}</span>
+                  </span>
+                ) : (
+                  <span>Price: ${item.product.price.toFixed(2)}</span>
+                )}
                 <QuantityHandler
                   item={item}
-                  handleQuantityChange={handleQuantityChange}
+                  onQuantityChange={(productId, quantity) =>
+                    handleQuantityChange(productId, quantity)
+                  }
                 />
                 <button
-                  onClick={() => removeFromCart(item.cart_id, item.productId)}
+                  onClick={() => removeItem(item.cart_id, item.productId)}
                   className="remove-button"
                 >
                   Remove

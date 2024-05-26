@@ -9,11 +9,26 @@ exports.all = async (req, res) => {
       include: [
         {
           model: db.cartItem,
-          include: [db.product],
+          include: [
+            {
+              model: db.product,
+              include: [{
+                model: db.specialProduct,
+                required: false, // LEFT OUTER JOIN to include products even without special offers
+                where: {
+                  start_date: {
+                    [db.Op.lte]: new Date() // Ensure the special is currently valid
+                  },
+                  end_date: {
+                    [db.Op.gte]: new Date()
+                  },
+                }
+              }]
+            }
+          ],
         },
       ],
     });
-
     if (!userCart) {
       // If the user doesn't have a cart, create a new one
       const newCart = await db.cart.create({ user_id: userId });
@@ -30,13 +45,13 @@ exports.all = async (req, res) => {
 exports.addItem = async (req, res) => {
   try {
     const userId = req.params.id;
-    const productId = Number(req.query.productId);
-    const quantity = Number(req.query.quantity) || 1;
+    const productId = req.body.productId;
+    const quantity = req.body.quantity || 1;
 
     // Check if productId is a number
-    if (isNaN(productId)) {
-      return res.status(400).json({ message: "Invalid productId value." });
-    }
+    //if (isNaN(productId)) {
+      //return res.status(400).json({ message: "Invalid productId value." });
+   // }
 
     // Get the user's cart
     const userCart = await db.cart.findOne({ where: { user_id: userId } });
@@ -67,20 +82,20 @@ exports.addItem = async (req, res) => {
 exports.updateCartItemQuantity = async (req, res) => {
   try {
     const userId = req.params.id;
-    const productId = parseInt(req.params.productId, 10);
-    const newQuantity = parseInt(req.query.newQuantity, 10);
+    const productId = req.params.productId;
+    const quantity = req.body.quantity;
     // Check if productId and newQuantity are numbers
-     if (isNaN(productId)) {
-     return res.status(400).json({
-      error: {
-      code: 400,
-      message: "Invalid productId value.",
-      details: "Please provide a valid productId value.",
+    // if (isNaN(productId)) {
+     //return res.status(400).json({
+     // error: {
+      //code: 400,
+     // message: "Invalid productId value.",
+      //details: "Please provide a valid productId value.",
       
-    },
-  });
-}
-    if (isNaN(newQuantity) || newQuantity <= 0) {
+   // },
+ // });
+//}
+    if (quantity<= 0) {
      return res.status(400).json({
     error: {
       code: 400,
@@ -102,14 +117,14 @@ exports.updateCartItemQuantity = async (req, res) => {
       });
     }
 
-    // Find the cart item with the given cart_id and product_id
+    
     // Find the cart item with the given cart_id and productId
-const cartItem = await db.cartItem.findOne({
-  where: { cart_id: userCart.cart_id, productId: productId },
-});
-    if (!cartItem) {
-      return res.status(404).json({
-        error: {
+      const cartItem = await db.cartItem.findOne({
+      where: { cart_id: userCart.cart_id, productId: productId },
+      });
+       if (!cartItem) {
+        return res.status(404).json({
+         error: {
           code: 404,
           message: "No cart item found with this product id.",
         },
@@ -118,7 +133,7 @@ const cartItem = await db.cartItem.findOne({
 
     // Update the quantity of the cart item
     try {
-      cartItem.quantity = newQuantity;
+      cartItem.quantity = quantity;
       await cartItem.save();
       res.json(cartItem);
     } catch (error) {
@@ -144,18 +159,18 @@ const cartItem = await db.cartItem.findOne({
 exports.deleteCartItem = async (req, res) => {
   try {
     const userId = req.params.id;
-    const productId = parseInt(req.params.productId, 10);
+    const productId = req.params.productId;
 
     // Check if productId is a number
-    if (isNaN(productId)) {
-      return res.status(400).json({
-        error: {
-          code: 400,
-          message: "Invalid productId value.",
-          details: "Please provide a valid productId value.",
-        },
-      });
-    }
+    //if (isNaN(productId)) {
+      //return res.status(400).json({
+       // error: {
+        //  code: 400,
+         // message: "Invalid productId value.",
+         // details: "Please provide a valid productId value.",
+        //},
+      //});
+   // }
 
     // Get the user's cart
     const userCart = await db.cart.findOne({ where: { user_id: userId } });

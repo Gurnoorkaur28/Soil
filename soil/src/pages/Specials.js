@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Button, Badge } from "react-bootstrap";
-import { getProducts } from "../data/productsData"; // Update the import path accordingly
-import useCart from "../hooks/useCart"; // Update the import path accordingly
+import { getProducts } from "../data/productsData"; //getting products
+import useCart from "../hooks/useCart"; //getting hook
 
-const SpecialProductList = ({ email }) => {
+const SpecialProductList = () => {
   const [products, setProducts] = useState([]);
-  const { handleAddToCart } = useCart(email);
+  const { addItem } = useCart(); // Use the useCart hook
 
-  useEffect(() => {
+  const handleAddToCart = (productId) => {
+    addItem(productId, 1); // Add item to cart with a default quantity of 1
+  };
+
+  useEffect(() => { // to fetch special products
     const fetchProducts = async () => {
       try {
         const allProducts = await getProducts();
