@@ -210,9 +210,11 @@ async function seedcart(db) {
     await db.cart.bulkCreate([
       {
         user_id: 1,
+        cart_id:1,
       },
       {
-        user_id: 3,
+        user_id: 2,
+        cart_id:2,
       },
     ]);
   }
@@ -227,7 +229,7 @@ async function seedCartItems(db) {
         quantity: 2,
       },
       {
-        cart_id: 1,
+        cart_id: 2,
         productId: 2,
         quantity: 3,
       },

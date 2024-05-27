@@ -126,7 +126,7 @@ const useCart = () => {
 
   useEffect(() => {
     const calculateTotalPrice = () => {
-      const total = cartItems.reduce((acc, item) => {
+      const total = (cartItems || []).reduce((acc, item) => {
         const price = item.product.specialProducts && item.product.specialProducts.length > 0
           ? item.product.specialProducts[0].discounted_price
           : item.product.price;
@@ -180,4 +180,3 @@ const useCart = () => {
 };
 
 export default useCart;
-
