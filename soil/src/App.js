@@ -18,6 +18,7 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Profile from "./pages/Profile";
 import Summary from "./components/Summary";
+import ReviewsPage from "./pages/ReviewsPage";
 import InitializeConstants, {
   getUser,
   removeUser,
@@ -27,7 +28,7 @@ import { useState } from "react";
 import DetailsPreferences from "./pages/DetailsPreferences";
 import MealPlan from "./pages/MealPlan";
 //import ProductList from "./data/productList";
-//import productData from "./data/productData";
+
 import ProductList from "./components/productList";
 import { useEffect } from "react";
 
@@ -94,6 +95,7 @@ function App() {
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/summary" element={<Summary />} />
+            <Route path="/reviews/:productId" element={<ReviewsPage />} />
             <Route path="/ProductList" element={<ProductList />} />
             <Route
               path="/mealPlan"

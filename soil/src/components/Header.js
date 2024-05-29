@@ -2,11 +2,13 @@ import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Stack from "react-bootstrap/Stack";
 import Button from "react-bootstrap/Button";
+import useCart from "../hooks/useCart";
 
 function Header(props) {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const { cartItems } = useCart();
+  
   const handleLogout = () => {
     props.logoutUser();
     navigate("/");
@@ -56,8 +58,10 @@ function Header(props) {
             src="shopping-cart-icon.png"
             alt="Shopping Cart"
             className="cart-logo"
-          />
-        </Button>
+            />
+            {cartItems.length > 0 && <span className="cart-counter">{cartItems.length}</span>}
+            
+          </Button>
       </Link>
     </Stack>
   );

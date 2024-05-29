@@ -1,35 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { Card, Button, Container, Row, Col, Badge } from "react-bootstrap";
-import { getProducts, getProductById, getReviewsByProductId } from "../data/productsData"; // Update the import path accordingly
-import useCart from "../hooks/useCart"; // Update the import path accordingly
+import { getProducts } from "../data/productsData";
+import useCart from "../hooks/useCart";
+import { Link } from "react-router-dom";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
-  const [reviews, setReviews] = useState({}); // Store reviews for each product
-  const { cartItems, loading, error, addItem, updateItemQuantity, removeItem } = useCart(); // Destructure necessary functions from useCart
+  const { addItem ,id } = useCart();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const products = await getProducts();
         setProducts(products);
-        // Fetch reviews for each product
-        const reviewsPromises = products.map(product => getReviewsByProductId(product.id));
-        const reviewsData = await Promise.all(reviewsPromises);
-        const reviewsObj = {};
-        reviewsData.forEach((reviews, index) => {
-          reviewsObj[products[index].id] = reviews;
-        });
-        setReviews(reviewsObj);
       } catch (error) {
-        console.error('Failed to fetch products:', error);
+        console.error("Failed to fetch products:", error);
       }
     };
     fetchProducts();
   }, []);
 
   const handleAddToCart = (productId) => {
-    addItem(productId, 1); // Add item to cart with a default quantity of 1
+     addItem(productId, 1);
+     if (!id) {
+      alert("You need to be logged in to add items to the cart.");
+      return;
+     }
   };
 
   return (
@@ -65,17 +61,9 @@ const ProductList = () => {
                   <Card.Text>Price: ${product.price.toFixed(2)}</Card.Text>
                 )}
                 <Button variant="primary" onClick={() => handleAddToCart(product.id)}>Add to Cart</Button>
-                {reviews[product.id] && (
-                  <>
-                    <h5>Reviews:</h5>
-                    {reviews[product.id].map(review => (
-                      <div key={review.id}>
-                        <p>{review.rating} stars</p>
-                        <p>{review.comment}</p>
-                      </div>
-                    ))}
-                  </>
-                )}
+                <Link to={`/reviews/${product.id}`} className="review-link">
+                  Reviews
+                </Link>
               </Card.Body>
             </Card>
           </Col>

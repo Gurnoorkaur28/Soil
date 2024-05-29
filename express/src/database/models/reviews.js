@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) =>
   sequelize.define("review", {
-  id: {
+    id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
@@ -16,7 +16,18 @@ module.exports = (sequelize, DataTypes) =>
   comment: {
     type: DataTypes.TEXT,
     allowNull: true,
-  },
+    validate: {
+        isWithinWordLimit(value) {
+          if (value) {
+            const wordCount = value.split(/\s+/).length;
+            if (wordCount > 100) {
+              throw new Error('Comment should not exceed 100 words.');
+            }
+          }
+        },
+      },
+    },
+
   
   productId: {
     type: DataTypes.INTEGER,
@@ -29,6 +40,8 @@ module.exports = (sequelize, DataTypes) =>
 }, {
   timestamps: false,
 });
+
+
 
 
 

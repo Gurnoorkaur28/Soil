@@ -34,7 +34,9 @@ const CartPage = () => {
                 {item.product.specialProducts && item.product.specialProducts.length > 0 ? (
                   <span>
                     Price: <del>${item.product.price.toFixed(2)}</del> {' '}
-                    <span style={{color: 'red'}}>${item.product.specialProducts[0].discounted_price.toFixed(2)}</span>
+                    <span style={{ color: 'red' }}>
+                      ${item.product.specialProducts[0].discounted_price.toFixed(2)}
+                    </span>
                   </span>
                 ) : (
                   <span>Price: ${item.product.price.toFixed(2)}</span>

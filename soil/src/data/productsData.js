@@ -58,11 +58,23 @@ async function getSpecialProducts() {
   const response = await axios.get(`${API_HOST}/api/specialProducts`);
   return response.data;
 }
+//reviews
 async function getReviewsByProductId(productId) {
   const response = await axios.get(`${API_HOST}/api/review/${productId}`);
   return response.data;
 };
-
+async function addReview(userId, productId, review) {
+  const response = await axios.post(`${API_HOST}/api/review/${userId}/${productId}`, review);
+  return response.data;
+}
+async function updateReview(userId, productId, reviewId, review) {
+  const response = await axios.put(`${API_HOST}/api/review/${userId}/${productId}/${reviewId}`, review);
+  return response.data;
+}
+async function deleteReview(userId, productId, reviewId) {
+  const response = await axios.delete(`${API_HOST}/api/review/${userId}/${productId}/${reviewId}`);
+  return response.data;
+}
 export {
   getProducts,
   getProductById,
@@ -75,6 +87,8 @@ export {
   updateCartItemQuantity,
   removeCartItem,
   getReviewsByProductId,
-  
+  addReview,
+  updateReview,
+  deleteReview,
 };
 

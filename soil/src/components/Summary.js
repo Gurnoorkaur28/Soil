@@ -1,15 +1,29 @@
 import { useEffect, useState } from "react";
-import { getUser, getUserName } from "../data/repository";
+import InitializeConstants, { getUser, getUserName } from "../data/repository";
 import useCart from "../hooks/useCart";
 
 const Summary = () => {
   const { cartItems, totalPrice } = useCart(); // Get cartItems and totalPrice from useCart hook
+  const [username, setUsername] = useState(getUser());
+  const [name, setName] = useState(null);
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      if (username) {
+        const fetchedName = await getUserName(username);
+        setName(fetchedName);
+      }
+    };
+
+    fetchUserName();
+  }, [username]);
+
 
   return (
     <div className="summary">
       <h3>Your order has been successfully placed</h3>
       <h3>Order Summary</h3>
-      <h4>Your details</h4>
+      <h4>Your details:username={username}</h4>
       
       <ul>
         {cartItems.map((item) => (

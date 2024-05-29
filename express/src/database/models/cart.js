@@ -13,4 +13,5 @@ module.exports = (sequelize, DataTypes) =>
     //     key: 'email',
     //   },
     // },
+    
   });

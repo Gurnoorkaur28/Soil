@@ -106,7 +106,7 @@ const useCart = () => {
       setId(id);
     };
     fetchUserId();
-  }, [getUser]);
+  }, []);
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -114,7 +114,7 @@ const useCart = () => {
       setLoading(true);
       try {
         const cart = await getUserCart(id);
-        setCartItems(cart.cartItems);
+        setCartItems(cart.cartItems || []);
       } catch (error) {
         setError(error);
       } finally {
@@ -126,6 +126,7 @@ const useCart = () => {
 
   useEffect(() => {
     const calculateTotalPrice = () => {
+      if (!cartItems) return;
       const total = (cartItems || []).reduce((acc, item) => {
         const price = item.product.specialProducts && item.product.specialProducts.length > 0
           ? item.product.specialProducts[0].discounted_price
@@ -142,8 +143,8 @@ const useCart = () => {
     try {
       await addItemToCart(id, productId, quantity);
       const cart = await getUserCart(id);
-      setCartItems(cart.cartItems);
-    } catch (error) {
+      setCartItems(cart.cartItems || []);
+       } catch (error) {
       setError(error);
     }
   };
@@ -152,8 +153,8 @@ const useCart = () => {
     try {
       await updateCartItemQuantity(id, productId, quantity);
       const cart = await getUserCart(id);
-      setCartItems(cart.cartItems);
-    } catch (error) {
+      setCartItems(cart.cartItems || []);
+       } catch (error) {
       setError(error);
     }
   };
@@ -162,13 +163,14 @@ const useCart = () => {
     try {
       await removeCartItem(cartId, productId);
       const cart = await getUserCart(id);
-      setCartItems(cart.cartItems);
-    } catch (error) {
+      setCartItems(cart.cartItems || []);
+       } catch (error) {
       setError(error);
     }
   };
 
   return {
+    id, // Export the user   
     cartItems,
     loading,
     error,

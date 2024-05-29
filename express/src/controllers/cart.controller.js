@@ -1,6 +1,6 @@
 const db = require("../database");
 
-
+//getting cart items for user 
 exports.all = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -9,6 +9,7 @@ exports.all = async (req, res) => {
       include: [
         {
           model: db.cartItem,
+          include: [db.product],
           include: [
             {
               model: db.product,
@@ -29,6 +30,7 @@ exports.all = async (req, res) => {
         },
       ],
     });
+
     if (!userCart) {
       // If the user doesn't have a cart, create a new one
       const newCart = await db.cart.create({ user_id: userId });
@@ -40,18 +42,12 @@ exports.all = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch cart: " + error.message });
   }
 };
-            
-
+//adding item to cart      
 exports.addItem = async (req, res) => {
   try {
     const userId = req.params.id;
     const productId = req.body.productId;
-    const quantity = req.body.quantity || 1;
-
-    // Check if productId is a number
-    //if (isNaN(productId)) {
-      //return res.status(400).json({ message: "Invalid productId value." });
-   // }
+    const quantity = req.body.quantity || 1; // Initial quantity should be one
 
     // Get the user's cart
     const userCart = await db.cart.findOne({ where: { user_id: userId } });
@@ -67,18 +63,34 @@ exports.addItem = async (req, res) => {
       return res.status(404).json({ message: "No product found with this id." });
     }
 
-    // Add the item to the cart
-    const newCartItem = await db.cartItem.create({
-      cart_id: userCart.cart_id,
-      productId: product.id,
-      quantity,
+    // Check if the product already exists in the cart
+    const existingCartItem = await db.cartItem.findOne({
+      where: {
+        cart_id: userCart.cart_id,
+        productId: product.id,
+      },
     });
 
-    res.json(newCartItem);
+    if (existingCartItem) {
+      // If the product already exists, update the quantity
+      existingCartItem.quantity += quantity;
+      await existingCartItem.save();
+      return res.json(existingCartItem);
+    } else {
+      // If the product doesn't exist, create a new cart item
+      const newCartItem = await db.cartItem.create({
+        cart_id: userCart.cart_id,
+        productId: product.id,
+        quantity,
+      });
+      return res.json(newCartItem);
+    }
   } catch (error) {
     res.status(500).json({ message: "Failed to add item to cart: " + error.message });
   }
 };
+
+//u
 exports.updateCartItemQuantity = async (req, res) => {
   try {
     const userId = req.params.id;
