@@ -8,7 +8,7 @@ const db = require("./src/database");
 const graphql = require("./src/graphql");
 
 // Database will be sync'ed in the background.
-db.sync();
+// db.sync();
 
 const app = express();
 
@@ -34,4 +34,3 @@ const PORT = process.env.ADMIN_PORT || 6000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
-ç;

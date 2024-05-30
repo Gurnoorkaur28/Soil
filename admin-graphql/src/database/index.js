@@ -6,6 +6,14 @@ const db = {
   Op: Sequelize.Op,
 };
 
+db.sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
+  host: config.HOST,
+  dialect: config.DIALECT,
+});
+
+// Include models
+db.user = require("./models/user.js")(db.sequelize, DataTypes);
+
 // Create Sequelize.
 db.sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   host: config.HOST,

@@ -4,8 +4,39 @@ const db = require("../database");
 
 const graphql = {};
 
-graphql.schema = buildSchema("");
+// Construct a schema, using GraphQL schema language
+graphql.schema = buildSchema(`
+  #GraphQL types
 
-graphql.root = {};
+  # user schema id, email ... fields corrospond to coloums in sequilizer model
+  # ! indicates they are non-nullable.
+
+  type User {
+    id: ID!
+    email: String!
+    password_hash: String!
+    full_name: String!
+    join_date: String!
+  }
+
+  
+  # Queries
+  type Query {
+    all_users: [User]
+  }
+
+  # Mutations
+
+
+
+
+`);
+
+// The root provides a resolver function for each API endpoint.
+graphql.root = {
+  all_users: async () => {
+    return await db.user.findAll();
+  },
+};
 
 module.exports = graphql;
