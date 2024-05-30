@@ -5,10 +5,15 @@ import useCart from "../hooks/useCart"; //getting hook
 
 const SpecialProductList = () => {
   const [products, setProducts] = useState([]);
-  const { addItem } = useCart(); // Use the useCart hook
+  const { addItem,id } = useCart(); // Use the useCart hook
 
   const handleAddToCart = (productId) => {
-    addItem(productId, 1); // Add item to cart with a default quantity of 1
+    if (!id) {
+      alert("You need to be logged in to add items to the cart.");
+      return;
+    }
+    addItem(productId, 1);
+   
   };
 
   useEffect(() => { // to fetch special products

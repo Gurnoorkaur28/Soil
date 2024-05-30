@@ -6,7 +6,8 @@ import { Link } from "react-router-dom";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
-  const { addItem ,id } = useCart();
+  const { addItem, id } = useCart();
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -15,18 +16,24 @@ const ProductList = () => {
         setProducts(products);
       } catch (error) {
         console.error("Failed to fetch products:", error);
+        setError("Failed to load products. Please try again later.");
       }
     };
     fetchProducts();
   }, []);
 
   const handleAddToCart = (productId) => {
-     addItem(productId, 1);
-     if (!id) {
+    if (!id) {
       alert("You need to be logged in to add items to the cart.");
       return;
-     }
+    }
+    addItem(productId, 1);
+   
   };
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <Container fluid>
@@ -46,7 +53,7 @@ const ProductList = () => {
                 src={`/images/${product.image}`}
                 style={{ width: "100%", height: "200px", objectFit: "cover" }}
               />
-              <Card.Body style={{ flexGrow: 1 }}>
+               <Card.Body style={{ flexGrow: 1 }}>
                 <Card.Title>{product.name}</Card.Title>
                 <Card.Text>{product.description}</Card.Text>
                 {product.specialProducts && product.specialProducts.length > 0 ? (

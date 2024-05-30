@@ -7,7 +7,7 @@ import useCart from "../hooks/useCart";
 function Header(props) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { cartItems } = useCart();
+  const {  cartItems = []} = useCart();
   
   const handleLogout = () => {
     props.logoutUser();

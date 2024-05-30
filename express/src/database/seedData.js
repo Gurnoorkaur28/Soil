@@ -114,6 +114,20 @@ async function seedProducts(db) {
         price: 2.1,
         image: "Avocado.png",
       },
+      {
+        id: 17,
+        name: "Apples",
+        description: "Fresh and crisp apples, great for snacking.",
+        price: 3.05,
+        image: "Apples.png",
+      },
+      {
+        id: 18,
+        name: "Bananas",
+        description: "Fresh and sweet bananas",
+        price: 4.0,
+        image: "Bananas.png",
+      },
     ]);
   }
 }
@@ -154,28 +168,46 @@ async function seedSpecialProducts(db) {
   if (specialProductCount === 0) {
     await db.specialProduct.bulkCreate([
       {
+        id: 18,
+        discounted_price: 2.5,
+        start_date: "2024-05-12",
+        end_date: "2024-08-18",
+      },
+      {
+        id: 17,
+        discounted_price: 2.5,
+        start_date: "2024-05-12",
+        end_date: "2024-08-18",
+      },
+      {
         id: 16,
         discounted_price: 1.5,
         start_date: "2024-05-12",
-        end_date: "2024-06-18",
+        end_date: "2024-08-18",
+      },
+      {
+        id: 16,
+        discounted_price: 1.5,
+        start_date: "2024-05-12",
+        end_date: "2024-08-18",
       },
       {
         id: 15,
         discounted_price: 3.05,
         start_date: "2024-05-12",
-        end_date: "2024-06-18",
+        end_date: "2024-08-18",
       },
       {
         id: 14,
         discounted_price: 4.05,
         start_date: "2024-05-12",
-        end_date: "2024-06-18",
+        end_date: "2024-08-18",
       },
       {
         id: 13,
         discounted_price: 3.05,
         start_date: "2024-05-12",
-        end_date: "2024-06-18",
+        end_date: "2024-08-18",
       },
     ]);
   }
@@ -210,11 +242,11 @@ async function seedcart(db) {
     await db.cart.bulkCreate([
       {
         user_id: 1,
-        cart_id:1,
+        cart_id: 1,
       },
       {
         user_id: 2,
-        cart_id:2,
+        cart_id: 2,
       },
     ]);
   }
