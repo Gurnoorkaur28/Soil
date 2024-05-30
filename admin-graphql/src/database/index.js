@@ -13,6 +13,15 @@ db.sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
 
 // Include models
 db.user = require("./models/user.js")(db.sequelize, DataTypes);
+db.product = require("./models/products.js")(db.sequelize, DataTypes);
+db.specialProduct = require("./models/specialProducts.js")(
+  db.sequelize,
+  DataTypes
+);
+
+// Association
+db.product.hasMany(db.specialProduct, { foreignKey: "id" });
+db.specialProduct.belongsTo(db.product, { foreignKey: "id" });
 
 // Create Sequelize.
 db.sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {

@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(cors());
 
 // Add GraphQL to express server.
-// Access to web-interface: http://localhost:4000/graphql
+// Access to web-interface: http://localhost:8080/graphql
 app.use(
   "/graphql",
   graphqlHTTP({

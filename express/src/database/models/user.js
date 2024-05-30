@@ -78,7 +78,7 @@ module.exports = (sequelize, DataTypes) =>
         type: DataTypes.STRING(30),
         allowNull: false,
       },
-      blocked: {
+      is_blocked: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
