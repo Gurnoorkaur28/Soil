@@ -92,8 +92,8 @@ graphql.schema = buildSchema(`
 
 
     # special product
-    create_special_product(input: UpdateSpecialProductInput): SpecialProduct,
-    update_special_product(input: CreateSpecialProductInput): SpecialProduct,
+    create_special_product(input: CreateSpecialProductInput): SpecialProduct,
+    update_special_product(input: UpdateSpecialProductInput): SpecialProduct,
     delete_special_product(special_id: Int!): Boolean
   }
 
@@ -198,7 +198,7 @@ graphql.root = {
     try {
       const product = await db.product.findByPk(args.id);
 
-      if (!product || product == null) return false;
+      if (!product) return false;
 
       // Delete special product then product
       await db.specialProduct.destroy({ where: { id: product.id } });
@@ -208,6 +208,90 @@ graphql.root = {
       return true;
     } catch (error) {
       throw new Error("Failed to delete product: " + error.message);
+    }
+  },
+
+  // Creates a new special product
+  create_special_product: async (args) => {
+    try {
+      // Validate required fields
+      if (
+        !args.input.discounted_price ||
+        !args.input.start_date ||
+        !args.input.end_date ||
+        !args.input.id
+      ) {
+        throw new Error(
+          "Discounted price, start date, end date, and product ID are required."
+        );
+      }
+
+      // Check for existing special
+      const existingSpecialProduct = await db.specialProduct.findOne({
+        where: { id: args.input.id },
+      });
+
+      if (existingSpecialProduct) {
+        throw new Error(
+          "A special product offer already exists for this product."
+        );
+      }
+
+      // Create the special product
+      const specialProduct = await db.specialProduct.create(args.input);
+      return specialProduct;
+    } catch (error) {
+      throw new Error(`Error creating new special product: ${error.message}`);
+    }
+  },
+
+  // Updates special product description
+  update_special_product: async (args) => {
+    try {
+      const specialProduct = await db.specialProduct.findByPk(
+        args.input.special_id
+      );
+
+      if (!specialProduct) {
+        throw new Error("Special product not found");
+      }
+
+      // If id is being changed we check if it dosent already exist
+      if (args.input.id) {
+        const existingSpecialProduct = await db.specialProduct.findOne({
+          where: { id: args.input.id },
+        });
+
+        if (existingSpecialProduct) {
+          throw new Error(
+            "A special product offer already exists for this product."
+          );
+        }
+      }
+
+      await specialProduct.update(args.input);
+      await specialProduct.save();
+
+      return specialProduct;
+    } catch (error) {
+      throw new Error("Error updating special product");
+    }
+  },
+
+  // Deletes special product by id: - pk
+  delete_special_product: async (args) => {
+    try {
+      const specialProduct = await db.specialProduct.findByPk(args.special_id);
+
+      if (!specialProduct) return false;
+
+      // Delete special product
+      await specialProduct.destroy();
+
+      // Return true when deleted
+      return true;
+    } catch (error) {
+      throw new Error("Failed to delete special product: " + error.message);
     }
   },
 };
