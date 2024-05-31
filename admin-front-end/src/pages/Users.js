@@ -19,7 +19,7 @@ function Users() {
   // Block and unblock users
   const handleBlock = async (user) => {
     let id;
-    if (user.is_blocked == false) {
+    if (user.is_blocked === false) {
       id = await blockUnblockUser(user.id, true);
     } else {
       id = await blockUnblockUser(user.id, false);

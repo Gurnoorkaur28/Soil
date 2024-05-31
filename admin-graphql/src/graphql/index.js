@@ -75,9 +75,11 @@ graphql.schema = buildSchema(`
 
     # product
     all_products: [Product],
+    product(id: Int): Product,
 
     # special product
-    all_specialproducts: [SpecialProduct]
+    all_specialproducts: [SpecialProduct],
+    specialProduct(id: Int): SpecialProduct
   }
 
   # Mutations
@@ -119,12 +121,28 @@ graphql.root = {
       throw new Error("Failed to fetch products");
     }
   },
+  // Returns product by pk id
+  product: async (args) => {
+    try {
+      return await db.product.findByPk(args.id);
+    } catch (error) {
+      throw new Error("Failed to fetch product");
+    }
+  },
   // Returns list of all special Products
   all_specialproducts: async () => {
     try {
       return await db.specialProduct.findAll();
     } catch (error) {
       throw new Error("Failed to fetch special products");
+    }
+  },
+  // Returns special product by pk id
+  specialProduct: async (args) => {
+    try {
+      return await db.specialProduct.findByPk(args.id);
+    } catch (error) {
+      throw new Error("Failed to fetch special product");
     }
   },
 
