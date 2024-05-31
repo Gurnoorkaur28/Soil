@@ -45,6 +45,7 @@
   padding: 10px 20px;
   background-color: #333333;
   color: #ffffff;
+  min-height: 60px;
 }
 
 .navbarLogo {
@@ -70,7 +71,11 @@
   color: #61dafb;
 }
 
-/* Home animated text */
-.homeContainer {
-  height: 90vh;
+/* Users */
+.blockedStatus {
+  color: #ff0000;
+}
+
+.unblockedStatus {
+  color: #008000;
 }
