@@ -1,3 +1,4 @@
+//Seed data for products
 async function seedProducts(db) {
   const productCount = await db.product.count();
   if (productCount === 0) {
@@ -113,7 +114,7 @@ async function seedProducts(db) {
     ]);
   }
 }
-
+//seed data for special products
 async function seedSpecialProducts(db) {
   const specialProductCount = await db.specialProduct.count();
   if (specialProductCount === 0) {
@@ -163,6 +164,7 @@ async function seedSpecialProducts(db) {
     ]);
   }
 }
+
 const argon2 = require("argon2");
 const joinDate = new Date().toISOString();
 
@@ -187,6 +189,7 @@ async function seedUsers(db) {
     ]);
   }
 }
+// Seed data for cart to add to database 
 async function seedcart(db) {
   const cartCount = await db.cart.count();
   if (cartCount === 0) {
@@ -219,6 +222,7 @@ async function seedCartItems(db) {
     ]);
   }
 }
+//seed reviews
 async function seedreview(db) {
   const reviewCount = await db.review.count();
   if (reviewCount === 0) {

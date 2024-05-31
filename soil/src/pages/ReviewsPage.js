@@ -1,78 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
-import { getReviewsByProductId, addReview, updateReview, deleteReview, getProductById, followUser, unfollowUser, getFollowingStatus } from "../data/productsData";
 import { useParams } from "react-router-dom";
 import ReviewForm from "../components/ReviewForm";
 import useCart from "../hooks/useCart";
-
+import StarRating from "../utils/StarRating";
+import useReviewHandlers from "../hooks/useReviewHandler";
+import { addReview, updateReview } from "../data/productsData"; 
 const ReviewsPage = () => {
+  // Get the productId
   const { productId } = useParams();
-  const [reviews, setReviews] = useState([]);
-  const [product, setProduct] = useState(null);
-  const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  //Get user id from from use cart hook
   const { id } = useCart();
-  const [followStatus, setFollowStatus] = useState({}); // Add followStatus state
-
-  useEffect(() => {
-    const fetchReviewsAndProduct = async () => {
-      try {
-        const [reviews, product, followStatus] = await Promise.all([
-          getReviewsByProductId(productId),
-          getProductById(productId),
-          getFollowingStatus(id)
-        ]);
-        setReviews(reviews);
-        setProduct(product);
-
-        // Initialize follow status
-        const initialFollowStatus = {};
-        followStatus.followingIds.forEach(followingId => {
-          initialFollowStatus[followingId] = true;
-        });
-        setFollowStatus(initialFollowStatus);
-      } catch (error) {
-        console.error("Failed to fetch reviews, product or follow status:", error);
-      }
-    };
-    fetchReviewsAndProduct();
-  }, [productId, reviewSubmitted, id]);
-
-  const handleReviewAdded = (newReview) => {
-    setReviews(prevReviews => [...prevReviews, newReview]);
-    setReviewSubmitted(true);
-  };
-
-  const handleReviewUpdated = (updatedReview) => {
-    setReviews(prevReviews => prevReviews.map(review => review.id === updatedReview.id ? updatedReview : review));
-    setReviewSubmitted(true);
-  };
-
-  const handleDeleteReview = async (reviewId) => {
-    try {
-      await deleteReview(id, productId, reviewId);
-      setReviews(prevReviews => prevReviews.filter(review => review.id !== reviewId));
-    } catch (error) {
-      console.error("Failed to delete review", error);
-    }
-  };
-
-  const handleFollow = async (followingId) => {
-    try {
-      await followUser(id, followingId);
-      setFollowStatus(prevStatus => ({ ...prevStatus, [followingId]: true }));
-    } catch (error) {
-      console.error("Failed to follow user", error);
-    }
-  };
-
-  const handleUnfollow = async (followingId) => {
-    try {
-      await unfollowUser(id, followingId);
-      setFollowStatus(prevStatus => ({ ...prevStatus, [followingId]: false }));
-    } catch (error) {
-      console.error("Failed to unfollow user", error);
-    }
-  };
+  //Get review handlers
+  const {
+    reviews,
+    product,
+    followStatus,
+    error,
+    handleReviewAdded,
+    handleReviewUpdated,
+    handleDeleteReview,
+    handleFollow,
+    handleUnfollow,
+  } = useReviewHandlers(productId, id);
 
   return (
     <Container>
@@ -80,10 +30,12 @@ const ReviewsPage = () => {
         <Col md={4}>
           {product && (
             <Card style={{ margin: "10px 0" }}>
+              {/* Display the product image */}
               <Card.Img variant="top" src={`/images/${product.image}`} style={{ width: "100%", height: "400px", objectFit: "cover" }} />
               <Card.Body>
                 <Card.Title>{product.name}</Card.Title>
                 <Card.Text>{product.description}</Card.Text>
+                 {/* Display the product price and special price (if any) */}
                 {product.specialProducts && product.specialProducts.length > 0 ? (
                   <>
                     <Card.Text>Price: ${product.price.toFixed(2)}</Card.Text>
@@ -100,18 +52,25 @@ const ReviewsPage = () => {
         </Col>
         <Col md={8}>
           <h2>Product Reviews</h2>
-          {reviews.map(review => (
+          {error && <p className="text-danger">{error}</p>}
+           {/* Map over the reviews and display each review */}
+          {reviews.map((review) => (
             <Card key={review.id} style={{ margin: "10px 0" }}>
               <Card.Body>
-                <Card.Title>{review.rating} stars</Card.Title>
+                {/* Display the star rating and comment for the review */}
+                <Card.Title><StarRating rating={review.rating} /></Card.Title>
                 <Card.Text>{review.comment} - {review.username}</Card.Text>
+                 {/* If the current user is not the author of the review, show follow/unfollow button */}
                 {id && id !== review.user_id && (
                   followStatus[review.user_id] ? (
+                    //Button to unfollow a user if already followed
                     <Button onClick={() => handleUnfollow(review.user_id)}>Unfollow</Button>
                   ) : (
+                    //Button to follow a user if not already followed
                     <Button onClick={() => handleFollow(review.user_id)}>Follow</Button>
                   )
                 )}
+                {/* Review form for updating the review */}
                 {id === review.user_id && (
                   <>
                     <ReviewForm
@@ -123,14 +82,21 @@ const ReviewsPage = () => {
                       addReview={addReview}
                       onReviewAdded={handleReviewAdded}
                     />
+                    {/* Button to delete the review */}
                     <Button className="checkout" onClick={() => handleDeleteReview(review.id)}>Delete Review</Button>
                   </>
                 )}
               </Card.Body>
             </Card>
           ))}
-          {id && !reviews.some(review => review.user_id === id) && (
-            <ReviewForm productId={productId} userId={id} onReviewAdded={handleReviewAdded} addReview={addReview} buttonClass="checkout" />
+          {/* If the current user has not reviewed the product, show the review form for submitting a new review */}
+          {id && !reviews.some((review) => review.user_id === id) && (
+            <ReviewForm
+             productId={productId} 
+             userId={id}
+             onReviewAdded={handleReviewAdded} 
+             addReview={addReview} 
+             buttonClass="checkout" />
           )}
         </Col>
       </Row>

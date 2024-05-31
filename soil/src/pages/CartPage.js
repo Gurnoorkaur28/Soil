@@ -5,8 +5,9 @@ import useCart from '../hooks/useCart';
 
 const CartPage = () => {
   const navigate = useNavigate();
+  //getting hooks from useCart
   const { cartItems, totalPrice, handleQuantityChange, removeItem } = useCart();
-
+ //handling checkout 
   const handleCheckout = () => {
     if (cartItems.length === 0) {
       alert("Your cart is empty.");

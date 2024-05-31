@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Button, Badge } from "react-bootstrap";
 import { getProducts } from "../data/productsData"; //getting products
 import useCart from "../hooks/useCart"; //getting hook
-
+import { Link } from "react-router-dom";
 const SpecialProductList = () => {
   const [products, setProducts] = useState([]);
   const { addItem,id } = useCart(); // Use the useCart hook
 
-  const handleAddToCart = (productId) => {
+  const handleAddToCart = (productId) => {   //adding items to cart
     if (!id) {
       alert("You need to be logged in to add items to the cart.");
       return;
@@ -15,7 +15,7 @@ const SpecialProductList = () => {
     addItem(productId, 1);
    
   };
-
+ // to fetch special products
   useEffect(() => { // to fetch special products
     const fetchProducts = async () => {
       try {
@@ -55,6 +55,9 @@ const SpecialProductList = () => {
                 </>
               )}
               <Button variant="primary" onClick={() => handleAddToCart(product.id)}>Add to Cart</Button>
+              <Link to={`/reviews/${product.id}`} className="review-link">
+                  Reviews
+                </Link>
             </div>
           </li>
         ))}

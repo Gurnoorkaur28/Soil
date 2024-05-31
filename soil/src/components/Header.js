@@ -7,7 +7,7 @@ import useCart from "../hooks/useCart";
 function Header(props) {
   const location = useLocation();
   const navigate = useNavigate();
-  const {  cartItems = []} = useCart();
+  const {  cartItemCount = []} = useCart();
   
   const handleLogout = () => {
     props.logoutUser();
@@ -59,8 +59,8 @@ function Header(props) {
             alt="Shopping Cart"
             className="cart-logo"
             />
-            {cartItems.length > 0 && <span className="cart-counter">{cartItems.length}</span>}
             
+            <span className="cart-counter ">{cartItemCount}</span>
           </Button>
       </Link>
     </Stack>
