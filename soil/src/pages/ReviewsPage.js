@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
-import { getReviewsByProductId, addReview, updateReview, deleteReview, getProductById } from "../data/productsData";
+import { getReviewsByProductId, addReview, updateReview, deleteReview, getProductById, followUser, unfollowUser, getFollowingStatus } from "../data/productsData";
 import { useParams } from "react-router-dom";
 import ReviewForm from "../components/ReviewForm";
 import useCart from "../hooks/useCart";
@@ -11,22 +11,31 @@ const ReviewsPage = () => {
   const [product, setProduct] = useState(null);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const { id } = useCart();
+  const [followStatus, setFollowStatus] = useState({}); // Add followStatus state
 
   useEffect(() => {
     const fetchReviewsAndProduct = async () => {
       try {
-        const [reviews, product] = await Promise.all([
+        const [reviews, product, followStatus] = await Promise.all([
           getReviewsByProductId(productId),
-          getProductById(productId)
+          getProductById(productId),
+          getFollowingStatus(id)
         ]);
         setReviews(reviews);
         setProduct(product);
+
+        // Initialize follow status
+        const initialFollowStatus = {};
+        followStatus.followingIds.forEach(followingId => {
+          initialFollowStatus[followingId] = true;
+        });
+        setFollowStatus(initialFollowStatus);
       } catch (error) {
-        console.error("Failed to fetch reviews or product:", error);
+        console.error("Failed to fetch reviews, product or follow status:", error);
       }
     };
     fetchReviewsAndProduct();
-  }, [productId, reviewSubmitted]);
+  }, [productId, reviewSubmitted, id]);
 
   const handleReviewAdded = (newReview) => {
     setReviews(prevReviews => [...prevReviews, newReview]);
@@ -44,6 +53,24 @@ const ReviewsPage = () => {
       setReviews(prevReviews => prevReviews.filter(review => review.id !== reviewId));
     } catch (error) {
       console.error("Failed to delete review", error);
+    }
+  };
+
+  const handleFollow = async (followingId) => {
+    try {
+      await followUser(id, followingId);
+      setFollowStatus(prevStatus => ({ ...prevStatus, [followingId]: true }));
+    } catch (error) {
+      console.error("Failed to follow user", error);
+    }
+  };
+
+  const handleUnfollow = async (followingId) => {
+    try {
+      await unfollowUser(id, followingId);
+      setFollowStatus(prevStatus => ({ ...prevStatus, [followingId]: false }));
+    } catch (error) {
+      console.error("Failed to unfollow user", error);
     }
   };
 
@@ -78,7 +105,14 @@ const ReviewsPage = () => {
               <Card.Body>
                 <Card.Title>{review.rating} stars</Card.Title>
                 <Card.Text>{review.comment} - {review.username}</Card.Text>
-                {(id === review.user_id || reviewSubmitted) && (
+                {id && id !== review.user_id && (
+                  followStatus[review.user_id] ? (
+                    <Button onClick={() => handleUnfollow(review.user_id)}>Unfollow</Button>
+                  ) : (
+                    <Button onClick={() => handleFollow(review.user_id)}>Follow</Button>
+                  )
+                )}
+                {id === review.user_id && (
                   <>
                     <ReviewForm
                       productId={productId}

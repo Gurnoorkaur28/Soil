@@ -1,20 +1,32 @@
 const db = require("../database");
 
-//get all reviews by productID
+// Get all reviews by productId
 exports.getReviewsByProductId = async (req, res) => {
-  try {
-    const productId = req.params.productId;
-    const reviews = await db.review.findAll({
-      where: {
-        productId: productId,
-        
-      },
-    });
-    res.json(reviews);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch reviews" });
-  }
-};
+    try {
+      const productId = req.params.productId;
+      const reviews = await db.review.findAll({
+        where: { productId },
+        include: [{
+          model: db.user,
+          attributes: ['full_name'],
+        }],
+      });
+  
+      // Format the response to include the username
+      const formattedReviews = reviews.map(review => ({
+        id: review.id,
+        rating: review.rating,
+        comment: review.comment,
+        productId: review.productId,
+        user_id: review.user_id,
+        username: review.user.full_name,
+      }));
+  
+      res.json(formattedReviews);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch reviews" });
+    }
+  };
 //add reviews in specific user id
 exports.addReview = async (req, res) => {
     try {

@@ -26,9 +26,9 @@ app.get("/", (req, res) => {
 require("./src/routes/products.routes.js")(express, app);
 require("./src/routes/specialProducts.routes.js")(express, app);
 require("./src/routes/user.routes.js")(express, app);
-//require("./src/routes/cart.routes.js")(express, app);
 require("./src/routes/cartItem.routes.js")(express, app);
 require("./src/routes/review.routes.js")(express, app);
+require("./src/routes/follow.routes.js")(express, app);
 // Set port, listen for requests.
 const PORT = process.env.SOIL_PORT || 4000;
 app.listen(PORT, () => {

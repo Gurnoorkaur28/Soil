@@ -75,6 +75,22 @@ async function deleteReview(userId, productId, reviewId) {
   const response = await axios.delete(`${API_HOST}/api/review/${userId}/${productId}/${reviewId}`);
   return response.data;
 }
+// Follow and Unfollow
+async function followUser(followerId, followingId) {
+  const response = await axios.post(`${API_HOST}/api/follow/${followerId}/${followingId}`);
+  return response.data;
+}
+
+async function unfollowUser(followerId, followingId) {
+  const response = await axios.delete(`${API_HOST}/api/follow/${followerId}/${followingId}`);
+  return response.data;
+}
+// Get Following Status
+async function getFollowingStatus(userId) {
+  const response = await axios.get(`${API_HOST}/api/follow/${userId}`);
+  return response.data;
+}
+
 export {
   getProducts,
   getProductById,
@@ -90,5 +106,8 @@ export {
   addReview,
   updateReview,
   deleteReview,
+  followUser,
+  unfollowUser,
+  getFollowingStatus,
 };
 
