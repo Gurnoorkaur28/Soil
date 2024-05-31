@@ -195,6 +195,11 @@ async function getUserJoinDate(email) {
   return user ? user.join_date : null;
 }
 
+async function getUserBlockedStatus(email) {
+  const user = await getUserByEmail(email);
+  return user ? user.is_blocked : null;
+}
+
 /**
  * Delets usr from localstorage
  * Gets the current list of users then
@@ -387,6 +392,7 @@ export {
   getUserProfile,
   getMealAccordPreference,
   getUserId,
+  getUserBlockedStatus,
 };
 
 export default InitializeConstants;

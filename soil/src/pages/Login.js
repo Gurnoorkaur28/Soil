@@ -5,7 +5,13 @@ import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import useForm from "../hooks/useForm.js";
 import validate from "../utils/formValidator.js";
-import { getUserId, getUserName, verifyUser } from "../data/repository.js";
+import {
+  getUser,
+  getUserBlockedStatus,
+  getUserId,
+  getUserName,
+  verifyUser,
+} from "../data/repository.js";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -17,6 +23,8 @@ function Login(props) {
   );
   // Hook to set user exist error msg
   const [userWrongError, setWrongUserExistsError] = useState("");
+  // Admin error msg
+  const [userBlocked, setBlockedUserError] = useState("");
   // Hook to set succes account creation msg
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -24,7 +32,20 @@ function Login(props) {
 
   async function login() {
     // Verify user and sets user if success
-    if (await verifyUser(values.email, values.password)) {
+    const verified = await verifyUser(values.email, values.password);
+    let blocked = false;
+
+    // Check id user is blocked
+    if (verified) {
+      setBlockedUserError("");
+      const isblocked = await getUserBlockedStatus(values.email);
+      if (isblocked == true) {
+        blocked = true;
+        setBlockedUserError("Account blocked by admin");
+        return;
+      }
+    }
+    if (verified && !blocked) {
       // Clear error msg
       setWrongUserExistsError("");
 
@@ -97,6 +118,8 @@ function Login(props) {
             {userWrongError && (
               <p className="alert alert-danger">{userWrongError}</p>
             )}
+            {/* Admin Block msg */}
+            {userBlocked && <p className="alert alert-danger">{userBlocked}</p>}
 
             {/* Display success msg's */}
             {successMessage && (
