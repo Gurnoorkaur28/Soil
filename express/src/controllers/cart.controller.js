@@ -1,15 +1,20 @@
 const db = require("../database");
 
-//getting cart items for user 
+/*Getting the user cart
+* including products and special model to display 
+* them on cart page
+*/
 exports.all = async (req, res) => {
   try {
+    //getting userId as params 
     const userId = req.params.id;
+    //finding the cart for the given userId
     const userCart = await db.cart.findOne({
       where: { user_id: userId },
       include: [
         {
           model: db.cartItem,
-          include: [db.product],
+          include: [db.product], //included product and special Product
           include: [
             {
               model: db.product,
@@ -43,7 +48,7 @@ exports.all = async (req, res) => {
   }
 };
 //adding item to cart      
-exports.addItem = async (req, res) => {
+ exports.addItem = async (req, res) => {
   try {
     const userId = req.params.id;
     const productId = req.body.productId;
@@ -90,23 +95,13 @@ exports.addItem = async (req, res) => {
   }
 };
 
-//u
+//updating quantity in cart 
 exports.updateCartItemQuantity = async (req, res) => {
   try {
     const userId = req.params.id;
     const productId = req.params.productId;
     const quantity = req.body.quantity;
-    // Check if productId and newQuantity are numbers
-    // if (isNaN(productId)) {
-     //return res.status(400).json({
-     // error: {
-      //code: 400,
-     // message: "Invalid productId value.",
-      //details: "Please provide a valid productId value.",
-      
-   // },
- // });
-//}
+    //if quanity is 0 ,i.e product in not in cart
     if (quantity<= 0) {
      return res.status(400).json({
     error: {
@@ -119,7 +114,7 @@ exports.updateCartItemQuantity = async (req, res) => {
 
     // Get the user's cart
     const userCart = await db.cart.findOne({ where: { user_id: userId } });
-
+    //if user cart doesnot exit , (used for backend validation)
     if (!userCart) {
       return res.status(404).json({
         error: {
@@ -167,28 +162,16 @@ exports.updateCartItemQuantity = async (req, res) => {
     });
   }
 };
-
+//deleting items from cart
 exports.deleteCartItem = async (req, res) => {
   try {
     const userId = req.params.id;
     const productId = req.params.productId;
-
-    // Check if productId is a number
-    //if (isNaN(productId)) {
-      //return res.status(400).json({
-       // error: {
-        //  code: 400,
-         // message: "Invalid productId value.",
-         // details: "Please provide a valid productId value.",
-        //},
-      //});
-   // }
-
     // Get the user's cart
     const userCart = await db.cart.findOne({ where: { user_id: userId } });
 
     if (!userCart) {
-      return res.status(404).json({
+       return res.status(404).json({
         error: {
           code: 404,
           message: "You don't have a cart. Please create one to add items.",

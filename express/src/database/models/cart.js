@@ -5,13 +5,5 @@ module.exports = (sequelize, DataTypes) =>
       primaryKey: true,
       autoIncrement: true,
     },
-    // email: {
-    //     type: DataTypes.STRING(32),
-    //   allowNull: false,
-    //   references: {
-    //     model: 'users',
-    //     key: 'email',
-    //   },
-    // },
     
   });
