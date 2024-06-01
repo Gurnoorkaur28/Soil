@@ -275,6 +275,38 @@ async function deleteSpecial(special_id) {
   return data.delete_special_product;
 }
 
+// All Reviews
+async function fetchReviews() {
+  const query = gql`
+    {
+      all_reviews {
+        id
+        rating
+        comment
+        productId
+        user_id
+        is_blocked
+      }
+    }
+  `;
+  const data = await request(GRAPH_QL_URL, query);
+  return data.all_reviews;
+}
+
+// Delete Review
+async function deleteReview(id) {
+  const query = gql`
+    mutation ($id: Int!) {
+      delete_review(id: $id)
+    }
+  `;
+
+  const variables = { id };
+  const data = await request(GRAPH_QL_URL, query, variables);
+
+  return data.delete_review;
+}
+
 export {
   fetchUsers,
   blockUnblockUser,
@@ -289,4 +321,6 @@ export {
   createSpecial,
   updateSpecial,
   deleteSpecial,
+  fetchReviews,
+  deleteReview,
 };

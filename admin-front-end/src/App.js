@@ -21,6 +21,9 @@ import Specials from "./pages/Specials";
 import CreateSpecial from "./pages/CreateSpecial";
 import EditSpecial from "./pages/EditSpecial";
 
+// Reviews
+import Reviews from "./pages/Reviews";
+
 function App() {
   const [message, setMessage] = useState(null);
 
@@ -56,6 +59,7 @@ function App() {
                   path="/editSpecial/:specialId"
                   element={<EditSpecial />}
                 />
+                <Route path="/reviews" element={<Reviews />} />
               </Routes>
             </Container>
           </main>

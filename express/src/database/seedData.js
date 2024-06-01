@@ -189,7 +189,7 @@ async function seedUsers(db) {
     ]);
   }
 }
-// Seed data for cart to add to database 
+// Seed data for cart to add to database
 async function seedcart(db) {
   const cartCount = await db.cart.count();
   if (cartCount === 0) {
@@ -238,6 +238,39 @@ async function seedreview(db) {
         productId: 2,
         comment: "good quality",
         user_id: 1,
+      },
+      {
+        rating: 5,
+        productId: 2,
+        comment: "Like this product alot",
+        user_id: 2,
+      },
+      {
+        rating: 3,
+        productId: 3,
+        comment: "Love this product",
+        user_id: 1,
+      },
+      // Review containing profanity
+      {
+        rating: 3,
+        productId: 3,
+        comment: "Fu this product",
+        user_id: 2,
+      },
+      // Review containing profanity
+      {
+        rating: 5,
+        productId: 4,
+        comment: "ass",
+        user_id: 1,
+      },
+      // Review containing profanity
+      {
+        rating: 1,
+        productId: 4,
+        comment: "shit product",
+        user_id: 2,
       },
     ]);
   }

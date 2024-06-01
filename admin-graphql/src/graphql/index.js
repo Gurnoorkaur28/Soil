@@ -37,6 +37,15 @@ graphql.schema = buildSchema(`
     id: Int!
   }
 
+  type Review {
+    id: Int!
+    rating: Int
+    comment: String!
+    productId: Int!
+    user_id: Int!
+    is_blocked: Boolean!
+  }
+
   # Input Type
   input CreateProductInput {
     name: String!,
@@ -80,24 +89,29 @@ graphql.schema = buildSchema(`
     # special product
     all_specialproducts: [SpecialProduct],
     specialProduct(special_id: Int): SpecialProduct,
-    special_has_productid(id: Int): Boolean
+    special_has_productid(id: Int): Boolean,
+
+    # review
+    all_reviews: [Review]
   }
 
   # Mutations
   type Mutation {
     # user
-    is_blocked_user(id: Int!, is_blocked: Boolean!): User
+    is_blocked_user(id: Int!, is_blocked: Boolean!): User,
     
     # product
     create_product(input: CreateProductInput): Product,
     update_product(input: UpdateProductInput): Product,
-    delete_product(id: Int!): Boolean
-
+    delete_product(id: Int!): Boolean,
 
     # special product
     create_special_product(input: CreateSpecialProductInput): SpecialProduct,
     update_special_product(input: UpdateSpecialProductInput): SpecialProduct,
-    delete_special_product(special_id: Int!): Boolean
+    delete_special_product(special_id: Int!): Boolean,
+
+    # review
+    delete_review(id: Int!): Boolean
   }
 
 `);
@@ -114,6 +128,7 @@ graphql.root = {
       throw new Error("Failed to fetch users");
     }
   },
+
   // Returns list of all products
   all_products: async () => {
     try {
@@ -130,6 +145,7 @@ graphql.root = {
       throw new Error("Failed to fetch product");
     }
   },
+
   // Returns list of all special Products
   all_specialproducts: async () => {
     try {
@@ -158,6 +174,15 @@ graphql.root = {
       return false;
     } catch (error) {
       throw new Error("Failed to fetch special product");
+    }
+  },
+
+  // Retrns all reviews
+  all_reviews: async () => {
+    try {
+      return await db.review.findAll();
+    } catch (error) {
+      throw new Error("Failed to fetch reviews");
     }
   },
 
@@ -203,7 +228,6 @@ graphql.root = {
       throw new Error(`Error creating new product: ${error.message}`);
     }
   },
-
   // Updates product description
   update_product: async (args) => {
     try {
@@ -225,7 +249,6 @@ graphql.root = {
       throw new Error("Error updating product");
     }
   },
-
   // Deletes prduct by id: - pk
   delete_product: async (args) => {
     try {
@@ -277,7 +300,6 @@ graphql.root = {
       throw new Error(`Error creating new special product: ${error.message}`);
     }
   },
-
   // Updates special product description
   update_special_product: async (args) => {
     try {
@@ -313,7 +335,6 @@ graphql.root = {
       throw new Error("Error updating special product");
     }
   },
-
   // Deletes special product by id: - pk
   delete_special_product: async (args) => {
     try {
@@ -328,6 +349,27 @@ graphql.root = {
       return true;
     } catch (error) {
       throw new Error("Failed to delete special product: " + error.message);
+    }
+  },
+
+  // Delete Review
+  delete_review: async (args) => {
+    try {
+      const review = await db.review.findByPk(args.id);
+
+      if (!review) return false;
+
+      // Set rating to null and update comment
+      review.rating = null;
+      review.comment = "**** This review has been deleted by the admin ***";
+      review.is_blocked = true;
+
+      // Save the updated review
+      await review.save();
+
+      return true;
+    } catch (error) {
+      throw new Error("Error deleting review");
     }
   },
 };
