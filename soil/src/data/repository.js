@@ -38,7 +38,7 @@ async function getUserId(usrEmail) {
     });
     return response.data.userId;
   } catch (error) {
-    console.error("Failed to fetch user id:", error);
+   // console.error("Failed to fetch user id:", error);
     return null;
   }
 }
