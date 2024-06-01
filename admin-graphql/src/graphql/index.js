@@ -79,7 +79,8 @@ graphql.schema = buildSchema(`
 
     # special product
     all_specialproducts: [SpecialProduct],
-    specialProduct(id: Int): SpecialProduct
+    specialProduct(special_id: Int): SpecialProduct,
+    special_has_productid(id: Int): Boolean
   }
 
   # Mutations
@@ -140,7 +141,21 @@ graphql.root = {
   // Returns special product by pk id
   specialProduct: async (args) => {
     try {
-      return await db.specialProduct.findByPk(args.id);
+      return await db.specialProduct.findByPk(args.special_id);
+    } catch (error) {
+      throw new Error("Failed to fetch special product");
+    }
+  },
+  // Returns true of a special has product id else false
+  special_has_productid: async (args) => {
+    try {
+      const special = await db.specialProduct.findOne({
+        where: { id: args.id },
+      });
+      // If product id exists
+      if (special) return true;
+      // If product id does not exists
+      return false;
     } catch (error) {
       throw new Error("Failed to fetch special product");
     }
@@ -275,12 +290,15 @@ graphql.root = {
       }
 
       // If id is being changed we check if it dosent already exist
-      if (args.input.id) {
+      if (args.input.id && args.input.id !== args.input.special_id) {
         const existingSpecialProduct = await db.specialProduct.findOne({
           where: { id: args.input.id },
         });
 
-        if (existingSpecialProduct) {
+        if (
+          existingSpecialProduct &&
+          existingSpecialProduct.special_id !== args.input.special_id
+        ) {
           throw new Error(
             "A special product offer already exists for this product."
           );

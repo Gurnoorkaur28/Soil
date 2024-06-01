@@ -1,17 +1,25 @@
 import "./App.css";
+
+// React imports
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { useEffect, useState } from "react";
+import MessageContext from "./context/MessageContext";
 
 // Path for Routes
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import Products from "./pages/Products";
-import Specials from "./pages/Specials";
 import Users from "./pages/Users";
+
+// Products path for routes imports
+import Products from "./pages/Products";
 import CreateProduct from "./pages/CreateProduct";
 import EditProduct from "./pages/EditProduct";
-import MessageContext from "./context/MessageContext";
+
+// Specials path for routes imports
+import Specials from "./pages/Specials";
+import CreateSpecial from "./pages/CreateSpecial";
+import EditSpecial from "./pages/EditSpecial";
 
 function App() {
   const [message, setMessage] = useState(null);
@@ -40,9 +48,14 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/users" element={<Users />} />
                 <Route path="/products" element={<Products />} />
-                <Route path="/specials" element={<Specials />} />
                 <Route path="/createProduct" element={<CreateProduct />} />
                 <Route path="/editProduct/:id" element={<EditProduct />} />
+                <Route path="/specials" element={<Specials />} />
+                <Route path="/createSpecial" element={<CreateSpecial />} />
+                <Route
+                  path="/editSpecial/:specialId"
+                  element={<EditSpecial />}
+                />
               </Routes>
             </Container>
           </main>

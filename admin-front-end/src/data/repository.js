@@ -152,6 +152,129 @@ async function deleteProducts(id) {
   return data.delete_product;
 }
 
+// All Specials
+async function fetchSpecials() {
+  const query = gql`
+    {
+      all_specialproducts {
+        special_id
+        discounted_price
+        start_date
+        end_date
+        id
+      }
+    }
+  `;
+  const data = await request(GRAPH_QL_URL, query);
+  return data.all_specialproducts;
+}
+
+// Special has product id
+async function specialHasProductid(id) {
+  const query = gql`
+    query ($id: Int) {
+      special_has_productid(id: $id)
+    }
+  `;
+
+  const variables = { id };
+  const data = await request(GRAPH_QL_URL, query, variables);
+
+  return data.special_has_productid;
+}
+
+// Gets specific special by id
+async function getSpecial(special_id) {
+  const query = gql`
+    query ($special_id: Int) {
+      specialProduct(special_id: $special_id) {
+        special_id
+        discounted_price
+        start_date
+        end_date
+        id
+      }
+    }
+  `;
+
+  const variables = { special_id };
+  const data = await request(GRAPH_QL_URL, query, variables);
+
+  return data.specialProduct;
+}
+
+// Create Special
+async function createSpecial(special) {
+  const query = gql`
+    mutation (
+      $discounted_price: Float!
+      $start_date: String!
+      $end_date: String!
+      $id: Int!
+    ) {
+      create_special_product(
+        input: {
+          discounted_price: $discounted_price
+          start_date: $start_date
+          end_date: $end_date
+          id: $id
+        }
+      ) {
+        special_id
+      }
+    }
+  `;
+
+  const variables = special;
+  const data = await request(GRAPH_QL_URL, query, variables);
+
+  return data.create_special_product;
+}
+
+// Update Special
+async function updateSpecial(special_id, special) {
+  const query = gql`
+    mutation (
+      $special_id: Int!
+      $discounted_price: Float
+      $start_date: String
+      $end_date: String
+      $id: Int
+    ) {
+      update_special_product(
+        input: {
+          special_id: $special_id
+          discounted_price: $discounted_price
+          start_date: $start_date
+          end_date: $end_date
+          id: $id
+        }
+      ) {
+        special_id
+      }
+    }
+  `;
+
+  const variables = { special_id, ...special };
+  const data = await request(GRAPH_QL_URL, query, variables);
+
+  return data.update_special_product;
+}
+
+// Delete Product
+async function deleteSpecial(special_id) {
+  const query = gql`
+    mutation ($special_id: Int!) {
+      delete_special_product(special_id: $special_id)
+    }
+  `;
+
+  const variables = { special_id };
+  const data = await request(GRAPH_QL_URL, query, variables);
+
+  return data.delete_special_product;
+}
+
 export {
   fetchUsers,
   blockUnblockUser,
@@ -160,4 +283,10 @@ export {
   createProducts,
   updateProduct,
   deleteProducts,
+  fetchSpecials,
+  specialHasProductid,
+  getSpecial,
+  createSpecial,
+  updateSpecial,
+  deleteSpecial,
 };
