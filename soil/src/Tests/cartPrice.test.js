@@ -1,4 +1,4 @@
-//Test for checking if 
+//Test for checking if proces are calculaated correctly in use cart 
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import TestCartComponent from '../utils/TestCartComponent'; // Import the test component that uses the useCart hook
