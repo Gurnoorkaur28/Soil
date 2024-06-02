@@ -63,25 +63,27 @@ const ReviewsPage = () => {
             <Card key={review.id} style={{ margin: "10px 0" }}>
               <Card.Body>
                 {review.is_blocked ? (
+                  // For blocked reviews
                   <>
-                    <Card.Body.Title>{review.username}</Card.Body.Title>
+                    <Card.Title>{review.username}</Card.Title>
                     <Card.Text>{review.comment}</Card.Text>
                     {id === review.user_id && (
-                      <Button onClick={() => handleDeleteReview(review.id)}>
+                      <Button
+                        className="checkout"
+                        onClick={() => handleDeleteReview(review.id)}
+                      >
                         Delete Review
                       </Button>
                     )}
                   </>
                 ) : (
+                  // For normal reviews
                   <>
                     <Card.Title>{review.username}</Card.Title>
-
                     <Card.Title>
                       <StarRating rating={review.rating} />
                     </Card.Title>
-                    <Card.Text>
-                      {review.comment} - {review.username}
-                    </Card.Text>
+                    <Card.Text>{review.comment}</Card.Text>
                     {id &&
                       id !== review.user_id &&
                       (followStatus[review.user_id] ? (
