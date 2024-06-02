@@ -41,18 +41,7 @@ const Navbar = (props) => {
         </a>
       </li>
 
-      <li className="nav-item">
-        <Link className="nav-link" to="/mealPlan">
-          Meal Plan
-        </Link>
-      </li>
-      {props.username === null ? null : (
-        <li className="nav-item">
-          <Link className="nav-link" to="/detailsPreference">
-            Details/Preference
-          </Link>
-        </li>
-      )}
+      
       {/* Modal for About us*/}
       <Modal show={isModalOpen} onHide={handleCloseModal}>
         <Modal.Header closeButton>
