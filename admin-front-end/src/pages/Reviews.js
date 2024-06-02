@@ -8,6 +8,9 @@ import MessageContext from "../context/MessageContext";
 import gql from "graphql-tag";
 import client from "../apollo/client.js";
 
+// Paging
+import ReactPaginate from "react-paginate";
+
 // https://www.npmjs.com/package/obscenity?activeTab=readme
 import {
   RegExpMatcher,
@@ -19,13 +22,16 @@ function Reviews() {
   // Context
   const { message, setMessage } = useContext(MessageContext);
   // Reviews
-  const [reviews, setReviews] = useState(null);
+  const [reviews, setReviews] = useState([]);
 
   // Obscenity
   const matcher = new RegExpMatcher({
     ...englishDataset.build(),
     ...englishRecommendedTransformers,
   });
+
+  // Paging
+  const [page, setPage] = useState(0);
 
   // Subscription
   const REVIEW_ADDED = gql`
@@ -41,9 +47,16 @@ function Reviews() {
     }
   `;
 
+  // Paging
+  const handlePageClick = (data) => {
+    setPage(data.selected);
+  };
+
   useEffect(() => {
     async function loadReviews() {
       const currentReviews = await fetchReviews();
+      // Sort by id so newest review is at front
+      currentReviews.sort((a, b) => b.id - a.id);
       const checkedReviews = currentReviews.map((review) => ({
         ...review,
         isObscene: matcher.hasMatch(review.comment),
@@ -52,6 +65,15 @@ function Reviews() {
     }
     loadReviews();
   }, []);
+
+  // Paging
+  // Filter out blocked reviews
+  const displayedReviews = reviews.filter((review) => !review.is_blocked);
+
+  const pageSize = 3;
+  const pageCount = Math.ceil(displayedReviews.length / pageSize);
+  const offset = page * pageSize;
+  const reviewToDisplay = displayedReviews.slice(offset, offset + pageSize);
 
   // useEffect for subscribing to new reviews
   useEffect(() => {
@@ -65,8 +87,10 @@ function Reviews() {
             return prevReviews;
           }
           // Append the new review to the current list
-          return [...prevReviews, newReview];
+          return [newReview, ...prevReviews];
         });
+        //  Reset to the first page to display the new review
+        setPage(0);
         // Set a message indicating a new review was added
         setMessage(`Review with ID ${review_added.id} created.`);
       },
@@ -88,7 +112,7 @@ function Reviews() {
     }
   };
 
-  if (reviews == null) return null;
+  if (reviews.length === 0) return <p>No reviews available.</p>;
   return (
     <div>
       {message && (
@@ -112,7 +136,7 @@ function Reviews() {
         {/* Body */}
         <tbody>
           {/* Map Users */}
-          {reviews.map(
+          {reviewToDisplay.map(
             (review) =>
               !review.is_blocked && (
                 // Change comments with profanity to red
@@ -139,6 +163,22 @@ function Reviews() {
           )}
         </tbody>
       </table>
+      <ReactPaginate
+        onPageChange={handlePageClick}
+        pageCount={pageCount}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        previousLabel="Previous"
+        nextLabel="Next"
+        breakLabel="..."
+        containerClassName="pagination"
+        pageClassName="page-item"
+        pageLinkClassName="page-link"
+        previousLinkClassName="page-link"
+        nextLinkClassName="page-link"
+        breakClassName="page-link"
+        activeClassName="active"
+      />
     </div>
   );
 }
