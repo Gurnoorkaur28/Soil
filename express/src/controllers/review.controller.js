@@ -93,7 +93,7 @@ exports.updateReview = async (req, res) => {
     const userId = req.params.id;
     const productId = req.params.productId;
     const reviewId = req.params.reviewId;
-
+    //finding review by reviewId, userId and productId
     const review = await db.review.findOne({
       where: {
         id: reviewId,
@@ -101,25 +101,16 @@ exports.updateReview = async (req, res) => {
         productId: productId,
       },
     });
-
+     //if review does not exist(used for checking backend)
     if (!review) {
       return res.status(404).json({ error: "Review not found" });
     }
-
-    //if (review.userId !== userId) {
-    //return res.status(403).json({ error: "You are not authorized to update this review" });
-    // }
-
+     
     const { rating, comment } = req.body;
-
+    //if rating and comment does not exist
     if (!rating || !comment) {
       return res.status(400).json({ error: "Rating and comment are required" });
     }
-
-    // if (isNaN(parseInt(rating))) {
-    //  return res.status(400).json({ error: "Rating must be a number" });
-    // }
-
     await review.update({
       rating: parseInt(rating),
       comment,
@@ -145,17 +136,12 @@ exports.deleteReview = async (req, res) => {
         productId: productId,
       },
     });
-
+   //if review does not exist(used to validate backend)
     if (!review) {
       return res.status(404).json({ error: "Review not found" });
     }
-
-    // Check if the user is authorized to delete the review
-    //if (review.user_id !== userId) {
-    // return res.status(403).json({ error: "You are not authorized to delete this review" });
-    //    }
-
-    await review.destroy();
+   //destroying review
+   await review.destroy();
 
     res.json({ message: "Review deleted successfully" });
   } catch (error) {
