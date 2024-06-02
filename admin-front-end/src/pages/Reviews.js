@@ -1,9 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
 import { deleteReview, fetchReviews } from "../data/repository";
 
 import MessageContext from "../context/MessageContext";
+
+// Subscriptions
+import gql from "graphql-tag";
+import client from "../apollo/client.js";
 
 // https://www.npmjs.com/package/obscenity?activeTab=readme
 import {
@@ -13,9 +16,6 @@ import {
 } from "obscenity";
 
 function Reviews() {
-  // Navigate to pages
-  const navigate = useNavigate();
-
   // Context
   const { message, setMessage } = useContext(MessageContext);
   // Reviews
@@ -27,34 +27,64 @@ function Reviews() {
     ...englishRecommendedTransformers,
   });
 
-  // Fetch reviews the check and sets them in state
+  // Subscription
+  const REVIEW_ADDED = gql`
+    subscription OnReviewAdded {
+      review_added {
+        id
+        comment
+        rating
+        productId
+        user_id
+        is_blocked
+      }
+    }
+  `;
+
   useEffect(() => {
-    getReviews();
+    async function loadReviews() {
+      const currentReviews = await fetchReviews();
+      const checkedReviews = currentReviews.map((review) => ({
+        ...review,
+        isObscene: matcher.hasMatch(review.comment),
+      }));
+      setReviews(checkedReviews);
+    }
+    loadReviews();
   }, []);
 
-  const getReviews = async () => {
-    const reviews = await fetchReviews();
-
-    // Check for profanity in comments
-    const checkReviews = reviews.map((review) => {
-      const isObscene = matcher.hasMatch(review.comment);
-      return { ...review, isObscene };
+  // useEffect for subscribing to new reviews
+  useEffect(() => {
+    const subscription = client.subscribe({ query: REVIEW_ADDED }).subscribe({
+      next: ({ data: { review_added } }) => {
+        setReviews((prevReviews) => {
+          const isObscene = matcher.hasMatch(review_added.comment);
+          const newReview = { ...review_added, isObscene };
+          // Check if the new review already exists to prevent duplicates
+          if (prevReviews.some((review) => review.id === newReview.id)) {
+            return prevReviews;
+          }
+          // Append the new review to the current list
+          return [...prevReviews, newReview];
+        });
+        // Set a message indicating a new review was added
+        setMessage(`Review with ID ${review_added.id} created.`);
+      },
+      error: (err) => {
+        console.error(`Subscription error: ${err}`);
+        setMessage("Failed to receive new review updates.");
+      },
     });
 
-    setReviews(checkReviews);
-  };
+    // Cleanup function to unsubscribe when the component unmounts
+    return () => subscription.unsubscribe();
+  }, [setMessage, matcher]);
 
-  // Deletes review
   const handleDelete = async (id) => {
     const deleted = await deleteReview(id);
-    // Referesh page and set msg after delete
     if (deleted) {
-      await getReviews();
-      setMessage(
-        <>
-          Review <strong>{id}</strong> has been successfully deleted.
-        </>
-      );
+      setReviews(reviews.filter((review) => review.id !== id));
+      setMessage(`Review ${id} has been successfully deleted.`);
     }
   };
 

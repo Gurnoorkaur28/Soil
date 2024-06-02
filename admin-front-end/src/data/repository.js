@@ -1,7 +1,7 @@
 import { request, gql } from "graphql-request";
 
 // Backedn url
-const GRAPH_QL_URL = "http://localhost:8080/graphql";
+const GRAPH_QL_URL = "http://localhost:4001/graphql";
 
 // All Users
 async function fetchUsers() {

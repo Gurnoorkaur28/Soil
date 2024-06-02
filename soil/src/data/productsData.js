@@ -13,7 +13,6 @@ async function getProductById(id) {
   return response.data;
 }
 
-
 // Cart
 //getting cart items of user
 async function getUserCart(userId) {
@@ -30,17 +29,21 @@ async function addItemToCart(userId, productId, quantity = 1) {
 }
 //updating quanity
 async function updateCartItemQuantity(userId, productId, quantity) {
-  const response = await axios.put(`${API_HOST}/api/cartItem/${userId}/item/${productId}`, {
-    quantity,
-  });
+  const response = await axios.put(
+    `${API_HOST}/api/cartItem/${userId}/item/${productId}`,
+    {
+      quantity,
+    }
+  );
   return response.data;
 }
 //removing items from cart
 async function removeCartItem(userId, productId) {
-  const response = await axios.delete(`${API_HOST}/api/cartItem/${userId}/item/${productId}`);
+  const response = await axios.delete(
+    `${API_HOST}/api/cartItem/${userId}/item/${productId}`
+  );
   return response.data;
 }
-
 
 // Special Products
 async function getSpecialProducts() {
@@ -52,30 +55,42 @@ async function getSpecialProducts() {
 async function getReviewsByProductId(productId) {
   const response = await axios.get(`${API_HOST}/api/review/${productId}`);
   return response.data;
-};
+}
 //user adding their reviews for product
 async function addReview(userId, productId, review) {
-  const response = await axios.post(`${API_HOST}/api/review/${userId}/${productId}`, review);
+  const response = await axios.post(
+    `${API_HOST}/api/review/${userId}/${productId}`,
+    review
+  );
   return response.data;
 }
 //updating reviews
 async function updateReview(userId, productId, reviewId, review) {
-  const response = await axios.put(`${API_HOST}/api/review/${userId}/${productId}/${reviewId}`, review);
+  const response = await axios.put(
+    `${API_HOST}/api/review/${userId}/${productId}/${reviewId}`,
+    review
+  );
   return response.data;
 }
 //deleting reviews
 async function deleteReview(userId, productId, reviewId) {
-  const response = await axios.delete(`${API_HOST}/api/review/${userId}/${productId}/${reviewId}`);
+  const response = await axios.delete(
+    `${API_HOST}/api/review/${userId}/${productId}/${reviewId}`
+  );
   return response.data;
 }
 // Follow and Unfollow
 async function followUser(followerId, followingId) {
-  const response = await axios.post(`${API_HOST}/api/follow/${followerId}/${followingId}`);
+  const response = await axios.post(
+    `${API_HOST}/api/follow/${followerId}/${followingId}`
+  );
   return response.data;
 }
 //unfollow user
 async function unfollowUser(followerId, followingId) {
-  const response = await axios.delete(`${API_HOST}/api/follow/${followerId}/${followingId}`);
+  const response = await axios.delete(
+    `${API_HOST}/api/follow/${followerId}/${followingId}`
+  );
   return response.data;
 }
 // Get Following Status
@@ -100,4 +115,3 @@ export {
   unfollowUser,
   getFollowingStatus,
 };
-

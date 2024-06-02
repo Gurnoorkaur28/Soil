@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.6.9",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -10,6 +11,8 @@
     "email-validator": "^2.0.4",
     "graphql": "^16.6.0",
     "graphql-request": "^5.0.0",
+    "graphql-tag": "^2.12.6",
+    "graphql-ws": "^5.11.2",
     "obscenity": "^0.2.1",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.2",
