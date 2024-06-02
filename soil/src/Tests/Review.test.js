@@ -3,11 +3,12 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import ReviewForm from '../components/ReviewForm';
 
 // Mock functions
+//There are created using jest.fn() to simulate the behavior of the actual functions.
 const mockOnReviewUpdated = jest.fn();
 const mockUpdateReview = jest.fn();
 const mockAddReview = jest.fn();
 const mockOnReviewAdded = jest.fn();
-
+// Test case for allowing comments with less than or equal to 100 words
 test('allows comments with less than or equal to 100 words', async () => {
   await act(async () => {
     render(
@@ -27,7 +28,7 @@ test('allows comments with less than or equal to 100 words', async () => {
 
   // Create a comment with exactly 100 words
   const validComment = new Array(100).fill('word').join(' ');
-
+  
   // Simulate user input
   await act(async () => {
     fireEvent.change(commentInput, { target: { value: validComment } });
