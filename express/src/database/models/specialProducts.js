@@ -1,25 +1,28 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define("specialProduct", {
+  return sequelize.define(
+    "specialProduct",
+    {
       special_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
       },
-     
+
       discounted_price: {
         type: DataTypes.FLOAT,
-        allowNull: false
+        allowNull: false,
       },
       start_date: {
         type: DataTypes.DATEONLY,
-        allowNull: false
+        allowNull: false,
       },
       end_date: {
         type: DataTypes.DATEONLY,
-        allowNull: false
-      }
-    }, {
-      timestamps: false
-    });
-  };
-  
+        allowNull: false,
+      },
+    },
+    {
+      timestamps: false,
+    }
+  );
+};

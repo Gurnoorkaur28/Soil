@@ -41,7 +41,6 @@ const Navbar = (props) => {
         </a>
       </li>
 
-      
       {/* Modal for About us*/}
       <Modal show={isModalOpen} onHide={handleCloseModal}>
         <Modal.Header closeButton>

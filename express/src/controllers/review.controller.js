@@ -41,14 +41,6 @@ exports.addReview = async (req, res) => {
     const user_id = parseInt(req.params.id);
     const productId = parseInt(req.params.productId);
     const { rating, comment } = req.body;
-    // const review = await db.review.create({
-    //   rating: req.body.rating,
-    //   comment: req.body.comment,
-    //   user_id,
-    //   productId,
-    // });
-
-    // pubsub.publish(REVIEW_ADDED_TRIGGER, { review_added: review });
 
     const query = gql`
       mutation (
@@ -106,19 +98,11 @@ exports.updateReview = async (req, res) => {
       return res.status(404).json({ error: "Review not found" });
     }
 
-    //if (review.userId !== userId) {
-    //return res.status(403).json({ error: "You are not authorized to update this review" });
-    // }
-
     const { rating, comment } = req.body;
 
     if (!rating || !comment) {
       return res.status(400).json({ error: "Rating and comment are required" });
     }
-
-    // if (isNaN(parseInt(rating))) {
-    //  return res.status(400).json({ error: "Rating must be a number" });
-    // }
 
     await review.update({
       rating: parseInt(rating),
@@ -149,11 +133,6 @@ exports.deleteReview = async (req, res) => {
     if (!review) {
       return res.status(404).json({ error: "Review not found" });
     }
-
-    // Check if the user is authorized to delete the review
-    //if (review.user_id !== userId) {
-    // return res.status(403).json({ error: "You are not authorized to delete this review" });
-    //    }
 
     await review.destroy();
 

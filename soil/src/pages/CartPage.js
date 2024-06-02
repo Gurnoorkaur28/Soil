@@ -1,13 +1,13 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import QuantityHandler from '../components/QuantityHandler';
-import useCart from '../hooks/useCart';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import QuantityHandler from "../components/QuantityHandler";
+import useCart from "../hooks/useCart";
 
 const CartPage = () => {
   const navigate = useNavigate();
   //getting hooks from useCart
   const { cartItems, totalPrice, handleQuantityChange, removeItem } = useCart();
- //handling checkout 
+  //handling checkout
   const handleCheckout = () => {
     if (cartItems.length === 0) {
       alert("Your cart is empty.");
@@ -32,11 +32,15 @@ const CartPage = () => {
               />
               <div className="cartText">
                 <p>{item.product.name}</p>
-                {item.product.specialProducts && item.product.specialProducts.length > 0 ? (
+                {item.product.specialProducts &&
+                item.product.specialProducts.length > 0 ? (
                   <span>
-                    Price: <del>${item.product.price.toFixed(2)}</del> {' '}
-                    <span style={{ color: 'red' }}>
-                      ${item.product.specialProducts[0].discounted_price.toFixed(2)}
+                    Price: <del>${item.product.price.toFixed(2)}</del>{" "}
+                    <span style={{ color: "red" }}>
+                      $
+                      {item.product.specialProducts[0].discounted_price.toFixed(
+                        2
+                      )}
                     </span>
                   </span>
                 ) : (
@@ -62,7 +66,9 @@ const CartPage = () => {
       <div className="totalPrice">
         <h2>Total Price: ${totalPrice.toFixed(2)}</h2>
       </div>
-      <button className="checkout" onClick={handleCheckout}>Checkout</button>
+      <button className="checkout" onClick={handleCheckout}>
+        Checkout
+      </button>
     </div>
   );
 };

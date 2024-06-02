@@ -1,9 +1,9 @@
 module.exports = (express, app) => {
-    const router = express.Router();
-    const specialProductController = require("../controllers/specialProducts.controller.js");
+  const router = express.Router();
+  const specialProductController = require("../controllers/specialProducts.controller.js");
 
-    router.get("/", specialProductController.all);
-    router.post("/", specialProductController.create);
+  router.get("/", specialProductController.all);
+  router.post("/", specialProductController.create);
 
-    app.use("/api/specialProducts", router);
+  app.use("/api/specialProducts", router);
 };

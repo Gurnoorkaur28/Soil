@@ -10,7 +10,9 @@ exports.followUser = async (req, res) => {
       followerId,
       followingId,
     });
-    console.log(`Attempting to follow user ${followingId} by user ${followerId}`);
+    console.log(
+      `Attempting to follow user ${followingId} by user ${followerId}`
+    );
 
     res.json(follow);
   } catch (error) {
@@ -45,18 +47,18 @@ exports.unfollowUser = async (req, res) => {
 };
 // Get following status for a specific user
 exports.getFollowingStatus = async (req, res) => {
-    try {
-      const userId = req.params.id;
-      const followedUsers = await db.follow.findAll({
-        where: { followerId: userId },
-        attributes: ['followingId'],
-      });
-  
-      const followingIds = followedUsers.map(follow => follow.followingId);
-  
-      res.json({ followingIds });
-    } catch (error) {
-      console.error("Error in getFollowingStatus:", error);
-      res.status(500).json({ error: "Failed to get following status" });
-    }
-  };
+  try {
+    const userId = req.params.id;
+    const followedUsers = await db.follow.findAll({
+      where: { followerId: userId },
+      attributes: ["followingId"],
+    });
+
+    const followingIds = followedUsers.map((follow) => follow.followingId);
+
+    res.json({ followingIds });
+  } catch (error) {
+    console.error("Error in getFollowingStatus:", error);
+    res.status(500).json({ error: "Failed to get following status" });
+  }
+};

@@ -7,10 +7,10 @@ exports.all = async (req, res) => {
       include: [
         {
           model: db.specialProduct,
-          required: false, // LEFT OUTER JOIN to include products even without special offers
+          required: false,
           where: {
             start_date: {
-              [db.Op.lte]: new Date(), // Ensure the special is currently valid
+              [db.Op.lte]: new Date(),
             },
             end_date: {
               [db.Op.gte]: new Date(),
@@ -57,10 +57,10 @@ exports.id = async (req, res) => {
       include: [
         {
           model: db.specialProduct,
-          required: false, // LEFT OUTER JOIN to include products even without special offers
+          required: false,
           where: {
             start_date: {
-              [db.Op.lte]: new Date(), // Ensure the special is currently valid
+              [db.Op.lte]: new Date(),
             },
             end_date: {
               [db.Op.gte]: new Date(),

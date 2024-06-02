@@ -7,8 +7,8 @@ import useCart from "../hooks/useCart";
 function Header(props) {
   const location = useLocation();
   const navigate = useNavigate();
-  const {  cartItemCount = []} = useCart();
-  
+  const { cartItemCount = [] } = useCart();
+
   const handleLogout = () => {
     props.logoutUser();
     navigate("/");
@@ -58,10 +58,10 @@ function Header(props) {
             src="shopping-cart-icon.png"
             alt="Shopping Cart"
             className="cart-logo"
-            />
-            
-            <span className="cart-counter ">{cartItemCount}</span>
-          </Button>
+          />
+
+          <span className="cart-counter ">{cartItemCount}</span>
+        </Button>
       </Link>
     </Stack>
   );

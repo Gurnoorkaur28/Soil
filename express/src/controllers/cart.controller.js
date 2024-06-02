@@ -1,12 +1,12 @@
 const db = require("../database");
 
 /*Getting the user cart
-* including products and special model to display 
-* them on cart page
-*/
+ * including products and special model to display
+ * them on cart page
+ */
 exports.all = async (req, res) => {
   try {
-    //getting userId as params 
+    //getting userId as params
     const userId = req.params.id;
     //finding the cart for the given userId
     const userCart = await db.cart.findOne({
@@ -14,23 +14,26 @@ exports.all = async (req, res) => {
       include: [
         {
           model: db.cartItem,
-          include: [db.product], //included product and special Product
+          //included product and special Product
+          include: [db.product],
           include: [
             {
               model: db.product,
-              include: [{
-                model: db.specialProduct,
-                required: false, // LEFT OUTER JOIN to include products even without special offers
-                where: {
-                  start_date: {
-                    [db.Op.lte]: new Date() // Ensure the special is currently valid
+              include: [
+                {
+                  model: db.specialProduct,
+                  required: false,
+                  where: {
+                    start_date: {
+                      [db.Op.lte]: new Date(),
+                    },
+                    end_date: {
+                      [db.Op.gte]: new Date(),
+                    },
                   },
-                  end_date: {
-                    [db.Op.gte]: new Date()
-                  },
-                }
-              }]
-            }
+                },
+              ],
+            },
           ],
         },
       ],
@@ -47,12 +50,12 @@ exports.all = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch cart: " + error.message });
   }
 };
-//adding item to cart      
- exports.addItem = async (req, res) => {
+//adding item to cart
+exports.addItem = async (req, res) => {
   try {
     const userId = req.params.id;
     const productId = req.body.productId;
-    const quantity = req.body.quantity || 1; // Initial quantity should be one
+    const quantity = req.body.quantity || 1;
 
     // Get the user's cart
     const userCart = await db.cart.findOne({ where: { user_id: userId } });
@@ -65,7 +68,9 @@ exports.all = async (req, res) => {
     const product = await db.product.findOne({ where: { id: productId } });
 
     if (!product) {
-      return res.status(404).json({ message: "No product found with this id." });
+      return res
+        .status(404)
+        .json({ message: "No product found with this id." });
     }
 
     // Check if the product already exists in the cart
@@ -91,26 +96,28 @@ exports.all = async (req, res) => {
       return res.json(newCartItem);
     }
   } catch (error) {
-    res.status(500).json({ message: "Failed to add item to cart: " + error.message });
+    res
+      .status(500)
+      .json({ message: "Failed to add item to cart: " + error.message });
   }
 };
 
-//updating quantity in cart 
+//updating quantity in cart
 exports.updateCartItemQuantity = async (req, res) => {
   try {
     const userId = req.params.id;
     const productId = req.params.productId;
     const quantity = req.body.quantity;
     //if quanity is 0 ,i.e product in not in cart
-    if (quantity<= 0) {
-     return res.status(400).json({
-    error: {
-      code: 400,
-      message: "Invalid newQuantity value.",
-      details: "Please provide a positive newQuantity value.",
-    },
-  });
-}
+    if (quantity <= 0) {
+      return res.status(400).json({
+        error: {
+          code: 400,
+          message: "Invalid newQuantity value.",
+          details: "Please provide a positive newQuantity value.",
+        },
+      });
+    }
 
     // Get the user's cart
     const userCart = await db.cart.findOne({ where: { user_id: userId } });
@@ -124,14 +131,13 @@ exports.updateCartItemQuantity = async (req, res) => {
       });
     }
 
-    
     // Find the cart item with the given cart_id and productId
-      const cartItem = await db.cartItem.findOne({
+    const cartItem = await db.cartItem.findOne({
       where: { cart_id: userCart.cart_id, productId: productId },
-      });
-       if (!cartItem) {
-        return res.status(404).json({
-         error: {
+    });
+    if (!cartItem) {
+      return res.status(404).json({
+        error: {
           code: 404,
           message: "No cart item found with this product id.",
         },
@@ -171,7 +177,7 @@ exports.deleteCartItem = async (req, res) => {
     const userCart = await db.cart.findOne({ where: { user_id: userId } });
 
     if (!userCart) {
-       return res.status(404).json({
+      return res.status(404).json({
         error: {
           code: 404,
           message: "You don't have a cart. Please create one to add items.",

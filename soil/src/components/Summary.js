@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import InitializeConstants, { getUser, getUserName } from "../data/repository";
 import useCart from "../hooks/useCart";
 
-
 const Summary = () => {
   const { cartItems, totalPrice } = useCart(); // Get cartItems and totalPrice from useCart hook
   const [username, setUsername] = useState(getUser());
@@ -43,11 +42,12 @@ const Summary = () => {
                   Price: $
                   {item.product.specialProducts &&
                   item.product.specialProducts.length > 0
-                    ? item.product.specialProducts[0].discounted_price.toFixed(2)
+                    ? item.product.specialProducts[0].discounted_price.toFixed(
+                        2
+                      )
                     : item.product.price.toFixed(2)}
                 </span>
-                -
-                <span>Quantity: {item.quantity}</span>
+                -<span>Quantity: {item.quantity}</span>
               </div>
               <div className="total">
                 Total: $

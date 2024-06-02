@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 //importing functions from products data(async functions)
 import {
   getUserCart,
@@ -17,18 +17,18 @@ const useCart = () => {
   const [error, setError] = useState(null);
   //state to manage total price
   const [totalPrice, setTotalPrice] = useState(0);
-  //state to manage cart count 
+  //state to manage cart count
   const [cartItemCount, setCartItemCount] = useState(0);
- // Fetch userId
+  // Fetch userId
   useEffect(() => {
     const user = getUser();
     const fetchUserId = async () => {
       const id = await getUserId(user);
-      setId(id);//setting state
+      setId(id); //setting state
     };
     fetchUserId();
   }, []);
-//fetching the cart items of fetched userId 
+  //fetching the cart items of fetched userId
   useEffect(() => {
     const fetchCartItems = async () => {
       if (!id) return; // If no user ID, exit function
@@ -54,9 +54,11 @@ const useCart = () => {
     const calculateTotalPrice = () => {
       if (!cartItems) return;
       const total = (cartItems || []).reduce((acc, item) => {
-        const price = item.product.specialProducts && item.product.specialProducts.length > 0
-          ? item.product.specialProducts[0].discounted_price
-          : item.product.price;
+        const price =
+          item.product.specialProducts &&
+          item.product.specialProducts.length > 0
+            ? item.product.specialProducts[0].discounted_price
+            : item.product.price;
         return acc + price * item.quantity;
       }, 0);
       setTotalPrice(total);
@@ -66,45 +68,45 @@ const useCart = () => {
   }, [cartItems]);
 
   //calculating cart item count ,settting count to cartItem length
-    useEffect(() => {
+  useEffect(() => {
     setCartItemCount(cartItems.length);
-    }, [cartItems]);
-    
-   //adding item to user's cart
+  }, [cartItems]);
+
+  //adding item to user's cart
   const addItem = async (productId, quantity = 1) => {
     try {
       await addItemToCart(id, productId, quantity);
       const cart = await getUserCart(id);
       setCartItems(cart.cartItems || []);
       setCartItemCount(cart.cartItems.length); // update cart item count
-       } catch (error) {
+    } catch (error) {
       setError(error);
     }
   };
-   //quanity change
+  //quanity change
   const handleQuantityChange = async (productId, quantity) => {
     try {
       await updateCartItemQuantity(id, productId, quantity);
       const cart = await getUserCart(id);
       setCartItems(cart.cartItems || []);
-       } catch (error) {
+    } catch (error) {
       setError(error);
     }
   };
-//removing item
+  //removing item
   const removeItem = async (cartId, productId) => {
     try {
       await removeCartItem(cartId, productId);
       const cart = await getUserCart(id);
       setCartItems(cart.cartItems || []);
       setCartItemCount(cart.cartItems.length); // update cart item count
-       } catch (error) {
+    } catch (error) {
       setError(error);
     }
   };
-  
+
   return {
-    id, // Export the user   
+    id, // Export the user
     cartItems,
     cartItemCount,
     loading,
@@ -113,7 +115,6 @@ const useCart = () => {
     addItem,
     handleQuantityChange,
     removeItem,
-  
   };
 };
 

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { getReviewsByProductId,
+import {
+  getReviewsByProductId,
   deleteReview,
   getProductById,
   followUser,
   unfollowUser,
-  getFollowingStatus } from "../data/productsData";
+  getFollowingStatus,
+} from "../data/productsData";
 // Custom hook to handle reviews and related functionality
 const useReviewHandlers = (productId, userId) => {
   //state to store reviews
@@ -16,11 +18,11 @@ const useReviewHandlers = (productId, userId) => {
   const [error, setError] = useState(null);
   //state for submission of review
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
-// Fetch reviews, product details, and follow status when productId, userId, or reviewSubmitted changes
+  // Fetch reviews, product details, and follow status when productId, userId, or reviewSubmitted changes
   useEffect(() => {
     const fetchReviewsAndProduct = async () => {
       try {
-       // Promise.allwaits for all the promises to either resolve or any one of them to reject.
+        // Promise.allwaits for all the promises to either resolve or any one of them to reject.
         const [reviews, product, followStatus] = await Promise.all([
           //Once all promises have resolved, the results are assigned to the variables reviews, product, and followStatus
           getReviewsByProductId(productId),
@@ -51,7 +53,9 @@ const useReviewHandlers = (productId, userId) => {
   // Handler for updating an existing review
   const handleReviewUpdated = (updatedReview) => {
     setReviews((prevReviews) =>
-      prevReviews.map((review) => (review.id === updatedReview.id ? updatedReview : review))
+      prevReviews.map((review) =>
+        review.id === updatedReview.id ? updatedReview : review
+      )
     );
     setReviewSubmitted(true);
   };
@@ -59,7 +63,9 @@ const useReviewHandlers = (productId, userId) => {
   const handleDeleteReview = async (reviewId) => {
     try {
       await deleteReview(userId, productId, reviewId);
-      setReviews((prevReviews) => prevReviews.filter((review) => review.id !== reviewId));
+      setReviews((prevReviews) =>
+        prevReviews.filter((review) => review.id !== reviewId)
+      );
     } catch (error) {
       console.error("Failed to delete review", error);
     }
@@ -73,11 +79,14 @@ const useReviewHandlers = (productId, userId) => {
       console.error("Failed to follow user", error);
     }
   };
-// Handler for unfollowing user
+  // Handler for unfollowing user
   const handleUnfollow = async (followingId) => {
     try {
       await unfollowUser(userId, followingId);
-      setFollowStatus((prevStatus) => ({ ...prevStatus, [followingId]: false }));
+      setFollowStatus((prevStatus) => ({
+        ...prevStatus,
+        [followingId]: false,
+      }));
     } catch (error) {
       console.error("Failed to unfollow user", error);
     }
