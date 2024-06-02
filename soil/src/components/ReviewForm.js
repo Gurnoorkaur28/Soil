@@ -35,11 +35,7 @@ const ReviewForm = ({
       setError("Comment should not exceed 100 words.");
       return;
     }
-    // Validate rating
-    if (rating === 0) {
-      setError("Rating is required.");
-      return;
-    }
+
     try {
       if (review) {
         // Update existing review

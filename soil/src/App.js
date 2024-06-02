@@ -25,6 +25,10 @@ import InitializeConstants, {
   getUserName,
 } from "./data/repository";
 import { useState } from "react";
+import DetailsPreferences from "./pages/DetailsPreferences";
+import MealPlan from "./pages/MealPlan";
+//import ProductList from "./data/productList";
+
 import ProductList from "./components/productList";
 import { useEffect } from "react";
 
@@ -93,7 +97,21 @@ function App() {
             <Route path="/summary" element={<Summary />} />
             <Route path="/reviews/:productId" element={<ReviewsPage />} />
             <Route path="/ProductList" element={<ProductList />} />
-            
+            <Route
+              path="/mealPlan"
+              element={<MealPlan username={username} />}
+            />
+            {/* Conditional render if user is logged in they go to profile page else they will go to login page */}
+            <Route
+              path="/detailsPreference"
+              element={
+                username ? (
+                  <DetailsPreferences username={username} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
           </Routes>
         </main>
         <Footer />
