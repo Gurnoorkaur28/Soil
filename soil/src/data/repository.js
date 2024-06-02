@@ -1,24 +1,13 @@
 // Some Code/concept was taken from Rmit/Canvas/2412/wk4/Practicle
 
 import { useEffect } from "react";
-import { MEALS } from "../utils/constants";
 import axios from "axios";
 import { API_USERS } from "../utils/constants";
 
 const USERS_KEY = "users";
 const USER_KEY = "user";
 
-// Gets users from local storage and returns them
-// function getUsers() {
-//   // Extract user data from local storage.
-//   const data = localStorage.getItem(USERS_KEY);
-
-//   if (data) {
-//     // Convert data to objects.
-//     return JSON.parse(data);
-//   }
-//   return [];
-// }
+// Gets users from 
 async function getUsers() {
   try {
     const response = await axios.get(API_USERS);
@@ -42,18 +31,7 @@ async function getUserId(usrEmail) {
     return null;
   }
 }
-
-// Checks if unique user with the following credentials exists
-// function uniqueUserExists(email) {
-//   const users = getUsers();
-//   for (const user of users) {
-//     if (email === user.email) {
-//       return false;
-//     }
-//   }
-
-//   return true;
-// }
+ // Checks if unique user with the following credentials exists
 async function uniqueUserExists(email) {
   try {
     const users = await getUsers();
@@ -65,17 +43,6 @@ async function uniqueUserExists(email) {
 }
 
 // Checks if user with the following credentials exists
-// function userExists(email, password) {
-//   const users = getUsers();
-//   const lowerCaseEmail = email.toLowerCase();
-//   for (const user of users) {
-//     if (lowerCaseEmail === user.email && password === user.password) {
-//       return true;
-//     }
-//   }
-
-//   return false;
-// }
 async function userExists(email, password) {
   try {
     const response = await axios.get(API_USERS + "login", {
@@ -88,14 +55,7 @@ async function userExists(email, password) {
   }
 }
 
-// Compare users stored in local storage and sets current user
-// function verifyUser(email, password) {
-//   if (userExists(email, password)) {
-//     setUser(email);
-//     return true;
-//   }
-//   return false;
-// }
+// Compare users stored in database and sets current user
 async function verifyUser(email, password) {
   const lowerCaseEmail = email.toLowerCase();
   if (await userExists(lowerCaseEmail, password)) {
@@ -105,16 +65,7 @@ async function verifyUser(email, password) {
   return false;
 }
 
-// Adds new user to local storage
-// function addUser(name, email, password) {
-//   const users = getUsers();
-//   const dateOfJoining = new Date().toISOString();
-//   const lowerCaseEmail = email.toLowerCase();
-//   const newUser = { name, email: lowerCaseEmail, password, dateOfJoining };
-//   users.push(newUser);
-//   localStorage.setItem(USERS_KEY, JSON.stringify(users));
-//   setUser(email);
-// }
+// Adds new user 
 async function addUser(name, email, password) {
   try {
     const lowerCaseEmail = email.toLowerCase();
@@ -162,58 +113,23 @@ async function getUserByEmail(usrEmail) {
 }
 
 // Returns full name of user
-// function getUserName(email) {
-//   if (email === null) return null;
-
-//   const users = getUsers();
-//   const lowerCaseEmail = email.toLowerCase();
-//   for (const user of users) {
-//     if (lowerCaseEmail === user.email) {
-//       return user.name;
-//     }
-//   }
-//   return null;
-// }
 async function getUserName(email) {
   const user = await getUserByEmail(email);
   return user ? user.full_name : null;
 }
 
 // Returns join date of current user
-// function getUserJoinDate(email) {
-//   const users = getUsers();
-//   const lowerCaseEmail = email.toLowerCase();
-//   for (const user of users) {
-//     if (lowerCaseEmail === user.email) {
-//       return user.dateOfJoining;
-//     }
-//   }
-//   return null;
-// }
 async function getUserJoinDate(email) {
   const user = await getUserByEmail(email);
   return user ? user.join_date : null;
 }
-
+//check if user is blocked
 async function getUserBlockedStatus(email) {
   const user = await getUserByEmail(email);
   return user ? user.is_blocked : null;
 }
 
-/**
- * Delets usr from localstorage
- * Gets the current list of users then
- * Finds the index of user if no user is found it returns -1
- * Then user is Deleted and list is updated in localstorage */
-// function deleteSpecificUser(email) {
-//   let users = getUsers();
-//   const userIndex = users.findIndex((user) => user.email === email);
-
-//   if (userIndex !== -1) {
-//     users.splice(userIndex, 1);
-//     localStorage.setItem(USERS_KEY, JSON.stringify(users));
-//   }
-// }
+//Delets usr by email
 async function deleteSpecificUser(email) {
   try {
     const response = await axios.delete(API_USERS, {
@@ -241,40 +157,13 @@ async function updateUserDetails(email, updates) {
 }
 
 // User profile update functions
-// function updateUserName(email, newName) {
-//   let users = getUsers();
-//   const lowerCaseEmail = email.toLowerCase();
-//   const userIndex = users.findIndex((user) => user.email === lowerCaseEmail);
-
-//   if (userIndex !== -1) {
-//     users[userIndex].name = newName;
-//     localStorage.setItem(USERS_KEY, JSON.stringify(users));
-//     return true;
-//   }
-//   return false;
-// }
+// function updateUserName(email, newName) 
 async function updateUserName(email, newName) {
   const updates = { full_name: newName };
   return await updateUserDetails(email, updates);
 }
 
-// function updateUserEmail(oldEmail, newEmail) {
-//   let users = getUsers();
-//   const lowerCaseOldEmail = oldEmail.toLowerCase();
-//   const lowerCaseNewEmail = newEmail.toLowerCase();
-//   const userIndex = users.findIndex((user) => user.email === lowerCaseOldEmail);
-
-//   if (userIndex !== -1 && uniqueUserExists(lowerCaseNewEmail)) {
-//     users[userIndex].email = lowerCaseNewEmail;
-//     localStorage.setItem(USERS_KEY, JSON.stringify(users));
-//     // Update the current user key if the updated email belongs to the logged-in user
-//     if (getUser() === lowerCaseOldEmail) {
-//       setUser(lowerCaseNewEmail);
-//     }
-//     return true;
-//   }
-//   return false;
-// }
+// function updateUserEmail(oldEmail, newEmail) 
 async function updateUserEmail(oldEmail, newEmail) {
   if (await uniqueUserExists(newEmail)) {
     const updates = { email: newEmail.toLowerCase() };
@@ -290,19 +179,6 @@ async function updateUserEmail(oldEmail, newEmail) {
 }
 
 // function updateUserPassword(email, newPassword) {
-//   let users = getUsers();
-//   const lowerCaseEmail = email.toLowerCase();
-//   const userIndex = users.findIndex(
-//     (user) => user.email === lowerCaseEmail.toLowerCase()
-//   );
-
-//   if (userIndex !== -1) {
-//     users[userIndex].password = newPassword;
-//     localStorage.setItem(USERS_KEY, JSON.stringify(users));
-//     return true;
-//   }
-//   return false;
-// }
 async function updateUserPassword(email, newPassword) {
   const updates = { password_hash: newPassword };
   return await updateUserDetails(email, updates);
@@ -363,13 +239,13 @@ function isLoggedIn() {
 // Gets meal according to diet preference
 function getMealAccordPreference(preference) {
   const meals = JSON.parse(localStorage.getItem("meals"))[preference];
-  return meals;
+  //return meals;
 }
 
 // Store constants in local storage
 function InitializeConstants() {
   useEffect(() => {
-    localStorage.setItem("meals", JSON.stringify(MEALS));
+    //localStorage.setItem("meals", JSON.stringify(MEALS));
   }, []);
 
   return null;

@@ -36,19 +36,6 @@ exports.all = async (req, res) => {
   }
 };
 
-exports.create = async (req, res) => {
-  try {
-    const product = await db.product.create({
-      name: req.body.name,
-      description: req.body.description,
-      price: req.body.price,
-      image: req.body.image,
-    });
-    res.json(product);
-  } catch (error) {
-    res.status(500).send("Failed to create product: " + error.message);
-  }
-};
 
 // Find product by primary key
 exports.id = async (req, res) => {

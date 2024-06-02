@@ -4,10 +4,7 @@ module.exports = (express, app) => {
 
     // Endpoint to fetch all products
     router.get("/", controller.all);
-
-    // Endpoint to create a new product
-    router.post("/", controller.create);
-    // Endpoint to find product by id
+   // Endpoint to find product by id
     router.get("/:id", controller.id);
 
     app.use("/api/products", router);
