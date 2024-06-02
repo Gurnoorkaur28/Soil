@@ -15,10 +15,10 @@ const ReviewForm = ({
   updateReview,
   // Function to add a new review
   addReview,
-   // Callback function to handle new review 
+  // Callback function to handle new review
   onReviewAdded,
 }) => {
-   // State to manage the rating and comment input fields
+  // State to manage the rating and comment input fields
   const [rating, setRating] = useState(review ? review.rating : 0);
   const [comment, setComment] = useState(review ? review.comment : "");
   const [error, setError] = useState("");
@@ -26,24 +26,30 @@ const ReviewForm = ({
   const handleStarClick = (newRating) => {
     setRating(newRating);
   };
-   // Handle form submission
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-   // Validate comment word count
-   const wordCount = comment.trim().split(/\s+/).length;
-   if (wordCount > 100) {
-   setError("Comment should not exceed 100 words.");
-     return;
+    // Validate comment word count
+    const wordCount = comment.trim().split(/\s+/).length;
+    if (wordCount > 100) {
+      setError("Comment should not exceed 100 words.");
+      return;
     }
 
     try {
       if (review) {
         // Update existing review
-        const updatedReview = await updateReview(userId, productId, review.id, { rating, comment });
+        const updatedReview = await updateReview(userId, productId, review.id, {
+          rating,
+          comment,
+        });
         onReviewUpdated(updatedReview);
       } else {
         // Add new review
-        const newReview = await addReview(userId, productId, { rating, comment });
+        const newReview = await addReview(userId, productId, {
+          rating,
+          comment,
+        });
         onReviewAdded(newReview);
       }
       // Reset form fields
@@ -63,11 +69,14 @@ const ReviewForm = ({
         {/* Display the star rating component */}
         <StarRating rating={rating} />
         <div>
-         {/* Render clickable stars for rating input */}   
+          {/* Render clickable stars for rating input */}
           {[1, 2, 3, 4, 5].map((star) => (
             <span
               key={star}
-              style={{ cursor: 'pointer', color: star <= rating ? 'gold' : 'gray' }}
+              style={{
+                cursor: "pointer",
+                color: star <= rating ? "gold" : "gray",
+              }}
               onClick={() => handleStarClick(star)}
             >
               ★
@@ -87,7 +96,7 @@ const ReviewForm = ({
         />
         {error && <Form.Text className="text-danger">{error}</Form.Text>}
       </Form.Group>
-       {/* Button changes based on whether it's an update or a new review */}
+      {/* Button changes based on whether it's an update or a new review */}
       <Button variant="primary" type="submit" className="checkout">
         {review ? "Update Review" : "Submit Review"}
       </Button>

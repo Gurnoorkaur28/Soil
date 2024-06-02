@@ -292,7 +292,7 @@ async function seedreview(db) {
         rating: 5,
         productId: 1,
         comment: "Very good",
-        user_id: 3,
+        user_id: 2,
       },
       {
         rating: 5,

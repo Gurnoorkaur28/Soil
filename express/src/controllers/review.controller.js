@@ -27,6 +27,7 @@ exports.getReviewsByProductId = async (req, res) => {
       productId: review.productId,
       user_id: review.user_id,
       username: review.user.full_name,
+      is_blocked: review.is_blocked,
     }));
 
     res.json(formattedReviews);
