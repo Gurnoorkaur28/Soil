@@ -186,6 +186,12 @@ async function seedUsers(db) {
         full_name: "testuser two",
         join_date: joinDate,
       },
+      {
+        email: "testusr3@gmail.com",
+        password_hash: passwordHash,
+        full_name: "testuser three",
+        join_date: joinDate,
+      },
     ]);
   }
 }
@@ -201,6 +207,10 @@ async function seedcart(db) {
       {
         user_id: 2,
         cart_id: 2,
+      },
+      {
+        user_id: 3,
+        cart_id: 3,
       },
     ]);
   }
@@ -271,6 +281,42 @@ async function seedreview(db) {
         productId: 4,
         comment: "shit product",
         user_id: 2,
+      },
+      {
+        rating: 4,
+        productId: 1,
+        comment: "Love This product",
+        user_id: 3,
+      },
+      {
+        rating: 5,
+        productId: 1,
+        comment: "Very good",
+        user_id: 3,
+      },
+      {
+        rating: 5,
+        productId: 17,
+        comment: "Fantastic",
+        user_id: 3,
+      },
+      {
+        rating: 1,
+        productId: 8,
+        comment: "bad do not recommend",
+        user_id: 3,
+      },
+      {
+        rating: 1,
+        productId: 8,
+        comment: "Hate this product",
+        user_id: 2,
+      },
+      {
+        rating: 1,
+        productId: 8,
+        comment: "Waste pf money",
+        user_id: 1,
       },
     ]);
   }

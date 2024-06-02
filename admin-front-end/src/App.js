@@ -23,6 +23,7 @@ import EditSpecial from "./pages/EditSpecial";
 
 // Reviews
 import Reviews from "./pages/Reviews";
+import Metrics from "./pages/Metrics";
 
 function App() {
   const [message, setMessage] = useState(null);
@@ -60,6 +61,7 @@ function App() {
                   element={<EditSpecial />}
                 />
                 <Route path="/reviews" element={<Reviews />} />
+                <Route path="/metrics" element={<Metrics />} />
               </Routes>
             </Container>
           </main>
