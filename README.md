@@ -4,6 +4,9 @@
 
 Soil is a full-stack grocery web application focused on organic products. It includes a public user-facing storefront and a separate admin dashboard for moderation and analytics. The project demonstrates real-world patterns such as REST and GraphQL APIs, shared databases, content moderation, and data visualisation.
 
+**Loom link for user Dasboard :https://www.loom.com/share/9c5fd9d03ee94dc0bb10fe48b9c4f717**
+
+**Loom link for admin dashbaord graphql : https://www.loom.com/share/e017c6c78ab14303916ba35346e11ef8**
 
 
 ---
@@ -32,15 +35,15 @@ Soil is a full-stack grocery web application focused on organic products. It inc
 - **Backend (Admin):** Apollo GraphQL API with subscriptions
 - **Database:** MySQL (shared across services via Sequelize ORM)
 
-User React App
-↓ REST
-Express API
-↓
-MySQL
-↑
-Admin GraphQL API
-↑ GraphQL + WebSockets
-Admin React Dashboard
+## System Architecture
+
+| Layer | Component | Technology | Communication |
+|-----|---------|-----------|---------------|
+| User Interface | Public User App | React | REST API |
+| Backend | User API | Express | REST → MySQL |
+| Database | Data Store | MySQL | Sequelize ORM |
+| Backend | Admin API | Apollo GraphQL | GraphQL + WebSockets |
+| Admin Interface | Admin Dashboard | React + Apollo Client | GraphQL Subscriptions |
 
 ---
 
